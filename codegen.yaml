@@ -8,5 +8,5 @@ generates:
       - typescript-react-apollo
     config:
       withHooks: true
-      fetcher:
-        func: './previewFetcher#fetchData'
+      #fetcher:
+      #  func: './previewFetcher#fetchData'
