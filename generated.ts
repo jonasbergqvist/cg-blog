@@ -1,10 +1,11 @@
-import { useQuery, UseQueryOptions } from '@tanstack/react-query';
-import { fetchData } from './previewFetcher';
+import { gql } from '@apollo/client';
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -50,8 +51,73 @@ export type AdaptiveHeroBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type AdaptiveHeroBlockAutocomplete = {
+  __typename?: 'AdaptiveHeroBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Callout?: Maybe<AdaptiveHeroBlockHeroBlockCalloutAutocomplete>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  HeroImage?: Maybe<AdaptiveHeroBlockSingleImageAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Link?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MainBackgroundVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type AdaptiveHeroBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AdaptiveHeroBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AdaptiveHeroBlockAutocompleteLinkArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AdaptiveHeroBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AdaptiveHeroBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AdaptiveHeroBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AdaptiveHeroBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type AdaptiveHeroBlockFacet = {
@@ -239,6 +305,59 @@ export type AdaptiveHeroBlockHeroBlockCallout = {
   Padding?: Maybe<Scalars['String']>;
 };
 
+export type AdaptiveHeroBlockHeroBlockCalloutAutocomplete = {
+  __typename?: 'AdaptiveHeroBlockHeroBlockCalloutAutocomplete';
+  BackgroundColor?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CalloutContent?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CalloutContentAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CalloutPosition?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CalloutTextColor?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type AdaptiveHeroBlockHeroBlockCalloutAutocompleteBackgroundColorArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AdaptiveHeroBlockHeroBlockCalloutAutocompleteCalloutContentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AdaptiveHeroBlockHeroBlockCalloutAutocompleteCalloutContentAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AdaptiveHeroBlockHeroBlockCalloutAutocompleteCalloutPositionArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AdaptiveHeroBlockHeroBlockCalloutAutocompleteCalloutTextColorArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AdaptiveHeroBlockHeroBlockCalloutAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AdaptiveHeroBlockHeroBlockCalloutAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
 export type AdaptiveHeroBlockHeroBlockCalloutFacet = {
   __typename?: 'AdaptiveHeroBlockHeroBlockCalloutFacet';
   BackgroundColor?: Maybe<Array<Maybe<StringFacet>>>;
@@ -380,6 +499,7 @@ export type AdaptiveHeroBlockOrderByInput = {
 
 export type AdaptiveHeroBlockOutput = {
   __typename?: 'AdaptiveHeroBlockOutput';
+  autocomplete?: Maybe<AdaptiveHeroBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<AdaptiveHeroBlockFacet>;
   items?: Maybe<Array<Maybe<AdaptiveHeroBlock>>>;
@@ -405,6 +525,38 @@ export type AdaptiveHeroBlockSingleImage = {
   Right?: Maybe<Scalars['Float']>;
   Top?: Maybe<Scalars['Float']>;
   Width?: Maybe<Scalars['Int']>;
+};
+
+export type AdaptiveHeroBlockSingleImageAutocomplete = {
+  __typename?: 'AdaptiveHeroBlockSingleImageAutocomplete';
+  AlternateText?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Filename?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Id?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Provider?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type AdaptiveHeroBlockSingleImageAutocompleteAlternateTextArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AdaptiveHeroBlockSingleImageAutocompleteFilenameArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AdaptiveHeroBlockSingleImageAutocompleteIdArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AdaptiveHeroBlockSingleImageAutocompleteProviderArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type AdaptiveHeroBlockSingleImageFacet = {
@@ -587,8 +739,65 @@ export type AdaptiveImage = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type AdaptiveImageAutocomplete = {
+  __typename?: 'AdaptiveImageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Large?: Maybe<AdaptiveImageSingleImageAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Medium?: Maybe<AdaptiveImageSingleImageAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Small?: Maybe<AdaptiveImageSingleImageAutocomplete>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type AdaptiveImageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AdaptiveImageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AdaptiveImageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AdaptiveImageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AdaptiveImageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AdaptiveImageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type AdaptiveImageFacet = {
@@ -739,6 +948,7 @@ export type AdaptiveImageOrderByInput = {
 
 export type AdaptiveImageOutput = {
   __typename?: 'AdaptiveImageOutput';
+  autocomplete?: Maybe<AdaptiveImageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<AdaptiveImageFacet>;
   items?: Maybe<Array<Maybe<AdaptiveImage>>>;
@@ -764,6 +974,38 @@ export type AdaptiveImageSingleImage = {
   Right?: Maybe<Scalars['Float']>;
   Top?: Maybe<Scalars['Float']>;
   Width?: Maybe<Scalars['Int']>;
+};
+
+export type AdaptiveImageSingleImageAutocomplete = {
+  __typename?: 'AdaptiveImageSingleImageAutocomplete';
+  AlternateText?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Filename?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Id?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Provider?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type AdaptiveImageSingleImageAutocompleteAlternateTextArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AdaptiveImageSingleImageAutocompleteFilenameArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AdaptiveImageSingleImageAutocompleteIdArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AdaptiveImageSingleImageAutocompleteProviderArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type AdaptiveImageSingleImageFacet = {
@@ -967,8 +1209,115 @@ export type AddressBookPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type AddressBookPageAutocomplete = {
+  __typename?: 'AddressBookPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type AddressBookPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AddressBookPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AddressBookPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AddressBookPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AddressBookPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AddressBookPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AddressBookPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AddressBookPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AddressBookPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AddressBookPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AddressBookPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AddressBookPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AddressBookPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type AddressBookPageFacet = {
@@ -1353,6 +1702,7 @@ export type AddressBookPageOrderByInput = {
 
 export type AddressBookPageOutput = {
   __typename?: 'AddressBookPageOutput';
+  autocomplete?: Maybe<AddressBookPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<AddressBookPageFacet>;
   items?: Maybe<Array<Maybe<AddressBookPage>>>;
@@ -1455,8 +1805,62 @@ export type AddressesElementBlock = IContent & {
   Url?: Maybe<Scalars['String']>;
   Validators?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type AddressesElementBlockAutocomplete = {
+  __typename?: 'AddressesElementBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type AddressesElementBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AddressesElementBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AddressesElementBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AddressesElementBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AddressesElementBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AddressesElementBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type AddressesElementBlockFacet = {
@@ -1732,6 +2136,7 @@ export type AddressesElementBlockOrderByInput = {
 
 export type AddressesElementBlockOutput = {
   __typename?: 'AddressesElementBlockOutput';
+  autocomplete?: Maybe<AddressesElementBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<AddressesElementBlockFacet>;
   items?: Maybe<Array<Maybe<AddressesElementBlock>>>;
@@ -1817,8 +2222,64 @@ export type AssetsDownloadLinksBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type AssetsDownloadLinksBlockAutocomplete = {
+  __typename?: 'AssetsDownloadLinksBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RootContent?: Maybe<ContentModelReferenceAutocomplete>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type AssetsDownloadLinksBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AssetsDownloadLinksBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AssetsDownloadLinksBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AssetsDownloadLinksBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AssetsDownloadLinksBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AssetsDownloadLinksBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type AssetsDownloadLinksBlockFacet = {
@@ -2021,6 +2482,7 @@ export type AssetsDownloadLinksBlockOrderByInput = {
 
 export type AssetsDownloadLinksBlockOutput = {
   __typename?: 'AssetsDownloadLinksBlockOutput';
+  autocomplete?: Maybe<AssetsDownloadLinksBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<AssetsDownloadLinksBlockFacet>;
   items?: Maybe<Array<Maybe<AssetsDownloadLinksBlock>>>;
@@ -2089,8 +2551,62 @@ export type Associations = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type AssociationsAutocomplete = {
+  __typename?: 'AssociationsAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type AssociationsAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AssociationsAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AssociationsAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AssociationsAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AssociationsAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type AssociationsAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type AssociationsFacet = {
@@ -2235,6 +2751,7 @@ export type AssociationsOrderByInput = {
 
 export type AssociationsOutput = {
   __typename?: 'AssociationsOutput';
+  autocomplete?: Maybe<AssociationsAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<AssociationsFacet>;
   items?: Maybe<Array<Maybe<Associations>>>;
@@ -2277,6 +2794,24 @@ export type BlobModel = {
   __typename?: 'BlobModel';
   Id?: Maybe<Scalars['String']>;
   Url?: Maybe<Scalars['String']>;
+};
+
+export type BlobModelAutocomplete = {
+  __typename?: 'BlobModelAutocomplete';
+  Id?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type BlobModelAutocompleteIdArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlobModelAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type BlobModelFacet = {
@@ -2340,8 +2875,62 @@ export type BlogCommentBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type BlogCommentBlockAutocomplete = {
+  __typename?: 'BlogCommentBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type BlogCommentBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogCommentBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogCommentBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogCommentBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogCommentBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogCommentBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type BlogCommentBlockFacet = {
@@ -2521,6 +3110,7 @@ export type BlogCommentBlockOrderByInput = {
 
 export type BlogCommentBlockOutput = {
   __typename?: 'BlogCommentBlockOutput';
+  autocomplete?: Maybe<BlogCommentBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<BlogCommentBlockFacet>;
   items?: Maybe<Array<Maybe<BlogCommentBlock>>>;
@@ -2618,8 +3208,115 @@ export type BlogItemPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type BlogItemPageAutocomplete = {
+  __typename?: 'BlogItemPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type BlogItemPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogItemPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogItemPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogItemPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogItemPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogItemPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogItemPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogItemPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogItemPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogItemPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogItemPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogItemPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogItemPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type BlogItemPageFacet = {
@@ -3014,6 +3711,7 @@ export type BlogItemPageOrderByInput = {
 
 export type BlogItemPageOutput = {
   __typename?: 'BlogItemPageOutput';
+  autocomplete?: Maybe<BlogItemPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<BlogItemPageFacet>;
   items?: Maybe<Array<Maybe<BlogItemPage>>>;
@@ -3148,8 +3846,117 @@ export type BlogListPage = IContent & {
   Template?: Maybe<Scalars['String']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type BlogListPageAutocomplete = {
+  __typename?: 'BlogListPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  CategoryListFilter?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Root?: Maybe<ContentModelReferenceAutocomplete>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type BlogListPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogListPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogListPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogListPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogListPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogListPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogListPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogListPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogListPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogListPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogListPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogListPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BlogListPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type BlogListPageFacet = {
@@ -3625,6 +4432,7 @@ export type BlogListPageOrderByInput = {
 
 export type BlogListPageOutput = {
   __typename?: 'BlogListPageOutput';
+  autocomplete?: Maybe<BlogListPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<BlogListPageFacet>;
   items?: Maybe<Array<Maybe<BlogListPage>>>;
@@ -3755,8 +4563,115 @@ export type BookmarksPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type BookmarksPageAutocomplete = {
+  __typename?: 'BookmarksPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type BookmarksPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BookmarksPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BookmarksPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BookmarksPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BookmarksPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BookmarksPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BookmarksPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BookmarksPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BookmarksPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BookmarksPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BookmarksPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BookmarksPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BookmarksPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type BookmarksPageFacet = {
@@ -4141,6 +5056,7 @@ export type BookmarksPageOrderByInput = {
 
 export type BookmarksPageOutput = {
   __typename?: 'BookmarksPageOutput';
+  autocomplete?: Maybe<BookmarksPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<BookmarksPageFacet>;
   items?: Maybe<Array<Maybe<BookmarksPage>>>;
@@ -4265,8 +5181,72 @@ export type BootstrapCardBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type BootstrapCardBlockAutocomplete = {
+  __typename?: 'BootstrapCardBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CardButtonLink?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CardImage?: Maybe<ContentModelReferenceAutocomplete>;
+  CardLinks?: Maybe<LinkItemNodeAutocomplete>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type BootstrapCardBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BootstrapCardBlockAutocompleteCardButtonLinkArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BootstrapCardBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BootstrapCardBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BootstrapCardBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BootstrapCardBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BootstrapCardBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type BootstrapCardBlockFacet = {
@@ -4556,6 +5536,7 @@ export type BootstrapCardBlockOrderByInput = {
 
 export type BootstrapCardBlockOutput = {
   __typename?: 'BootstrapCardBlockOutput';
+  autocomplete?: Maybe<BootstrapCardBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<BootstrapCardBlockFacet>;
   items?: Maybe<Array<Maybe<BootstrapCardBlock>>>;
@@ -4644,8 +5625,64 @@ export type BreadcrumbBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type BreadcrumbBlockAutocomplete = {
+  __typename?: 'BreadcrumbBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  DestinationPage?: Maybe<ContentModelReferenceAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type BreadcrumbBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BreadcrumbBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BreadcrumbBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BreadcrumbBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BreadcrumbBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BreadcrumbBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type BreadcrumbBlockFacet = {
@@ -4851,6 +5888,7 @@ export type BreadcrumbBlockOrderByInput = {
 
 export type BreadcrumbBlockOutput = {
   __typename?: 'BreadcrumbBlockOutput';
+  autocomplete?: Maybe<BreadcrumbBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<BreadcrumbBlockFacet>;
   items?: Maybe<Array<Maybe<BreadcrumbBlock>>>;
@@ -4950,8 +5988,115 @@ export type BudgetingPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type BudgetingPageAutocomplete = {
+  __typename?: 'BudgetingPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type BudgetingPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BudgetingPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BudgetingPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BudgetingPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BudgetingPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BudgetingPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BudgetingPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BudgetingPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BudgetingPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BudgetingPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BudgetingPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BudgetingPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BudgetingPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type BudgetingPageFacet = {
@@ -5336,6 +6481,7 @@ export type BudgetingPageOrderByInput = {
 
 export type BudgetingPageOutput = {
   __typename?: 'BudgetingPageOutput';
+  autocomplete?: Maybe<BudgetingPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<BudgetingPageFacet>;
   items?: Maybe<Array<Maybe<BudgetingPage>>>;
@@ -5433,13 +6579,20 @@ export type BundleContent = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
 };
 
 export type BundleContentAssociations = {
   __typename?: 'BundleContentAssociations';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type BundleContentAssociationsAutocomplete = {
+  __typename?: 'BundleContentAssociationsAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type BundleContentAssociationsFacet = {
@@ -5455,9 +6608,77 @@ export type BundleContentAssociationsWhereInput = {
   ContentLink?: InputMaybe<ContentModelReferenceWhereInput>;
 };
 
+export type BundleContentAutocomplete = {
+  __typename?: 'BundleContentAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Associations?: Maybe<BundleContentAssociationsAutocomplete>;
+  BundleReference?: Maybe<ContentModelReferenceAutocomplete>;
+  Categories?: Maybe<BundleContentCategoriesAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentEntries?: Maybe<BundleContentRelationsAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  SeoInformation?: Maybe<BundleContentSeoInformationAutocomplete>;
+  SeoUri?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type BundleContentAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BundleContentAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BundleContentAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BundleContentAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BundleContentAutocompleteSeoUriArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BundleContentAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BundleContentAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
 export type BundleContentCategories = {
   __typename?: 'BundleContentCategories';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type BundleContentCategoriesAutocomplete = {
+  __typename?: 'BundleContentCategoriesAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type BundleContentCategoriesFacet = {
@@ -5667,6 +6888,7 @@ export type BundleContentOrderByInput = {
 
 export type BundleContentOutput = {
   __typename?: 'BundleContentOutput';
+  autocomplete?: Maybe<BundleContentAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<BundleContentFacet>;
   items?: Maybe<Array<Maybe<BundleContent>>>;
@@ -5681,6 +6903,11 @@ export type BundleContentOutputTotalArgs = {
 export type BundleContentRelations = {
   __typename?: 'BundleContentRelations';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type BundleContentRelationsAutocomplete = {
+  __typename?: 'BundleContentRelationsAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type BundleContentRelationsFacet = {
@@ -5701,6 +6928,31 @@ export type BundleContentSeoInformation = {
   Description?: Maybe<Scalars['String']>;
   Keywords?: Maybe<Scalars['String']>;
   Title?: Maybe<Scalars['String']>;
+};
+
+export type BundleContentSeoInformationAutocomplete = {
+  __typename?: 'BundleContentSeoInformationAutocomplete';
+  Description?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Keywords?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Title?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type BundleContentSeoInformationAutocompleteDescriptionArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BundleContentSeoInformationAutocompleteKeywordsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type BundleContentSeoInformationAutocompleteTitleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type BundleContentSeoInformationFacet = {
@@ -5836,8 +7088,112 @@ export type ButtonBlock = IContent & {
   TextPadding?: Maybe<Scalars['String']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type ButtonBlockAutocomplete = {
+  __typename?: 'ButtonBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ButtonBackgroundColor?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ButtonBackgroundHoverColor?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ButtonBorderColor?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ButtonBorderHoverColor?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ButtonLink?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ButtonTextColor?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ButtonTextHoverColor?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type ButtonBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ButtonBlockAutocompleteButtonBackgroundColorArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ButtonBlockAutocompleteButtonBackgroundHoverColorArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ButtonBlockAutocompleteButtonBorderColorArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ButtonBlockAutocompleteButtonBorderHoverColorArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ButtonBlockAutocompleteButtonLinkArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ButtonBlockAutocompleteButtonTextColorArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ButtonBlockAutocompleteButtonTextHoverColorArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ButtonBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ButtonBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ButtonBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ButtonBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ButtonBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type ButtonBlockFacet = {
@@ -6212,6 +7568,7 @@ export type ButtonBlockOrderByInput = {
 
 export type ButtonBlockOutput = {
   __typename?: 'ButtonBlockOutput';
+  autocomplete?: Maybe<ButtonBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<ButtonBlockFacet>;
   items?: Maybe<Array<Maybe<ButtonBlock>>>;
@@ -6309,8 +7666,65 @@ export type CalendarBlock = IContent & {
   Url?: Maybe<Scalars['String']>;
   ViewMode?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type CalendarBlockAutocomplete = {
+  __typename?: 'CalendarBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  CategoryFilter?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  EventsRoot?: Maybe<ContentModelReferenceAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type CalendarBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CalendarBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CalendarBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CalendarBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CalendarBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CalendarBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type CalendarBlockFacet = {
@@ -6525,6 +7939,7 @@ export type CalendarBlockOrderByInput = {
 
 export type CalendarBlockOutput = {
   __typename?: 'CalendarBlockOutput';
+  autocomplete?: Maybe<CalendarBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<CalendarBlockFacet>;
   items?: Maybe<Array<Maybe<CalendarBlock>>>;
@@ -6629,8 +8044,115 @@ export type CalendarEventPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type CalendarEventPageAutocomplete = {
+  __typename?: 'CalendarEventPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type CalendarEventPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CalendarEventPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CalendarEventPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CalendarEventPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CalendarEventPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CalendarEventPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CalendarEventPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CalendarEventPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CalendarEventPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CalendarEventPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CalendarEventPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CalendarEventPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CalendarEventPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type CalendarEventPageFacet = {
@@ -7041,6 +8563,7 @@ export type CalendarEventPageOrderByInput = {
 
 export type CalendarEventPageOutput = {
   __typename?: 'CalendarEventPageOutput';
+  autocomplete?: Maybe<CalendarEventPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<CalendarEventPageFacet>;
   items?: Maybe<Array<Maybe<CalendarEventPage>>>;
@@ -7146,8 +8669,65 @@ export type CallToActionBlock = IContent & {
   Title?: Maybe<Scalars['String']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type CallToActionBlockAutocomplete = {
+  __typename?: 'CallToActionBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  BackgroundImage?: Maybe<ContentModelReferenceAutocomplete>;
+  Button?: Maybe<CallToActionBlockButtonBlockAutocomplete>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type CallToActionBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CallToActionBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CallToActionBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CallToActionBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CallToActionBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CallToActionBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type CallToActionBlockButtonBlock = {
@@ -7177,6 +8757,116 @@ export type CallToActionBlockButtonBlock = {
   ShowTransparentBackground?: Maybe<Scalars['Bool']>;
   TextColorOverdrive?: Maybe<Scalars['Bool']>;
   TextPadding?: Maybe<Scalars['String']>;
+};
+
+export type CallToActionBlockButtonBlockAutocomplete = {
+  __typename?: 'CallToActionBlockButtonBlockAutocomplete';
+  BackgroundColor?: Maybe<Array<Maybe<Scalars['String']>>>;
+  BorderStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ButtonBackgroundColor?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ButtonBackgroundHoverColor?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ButtonBorderColor?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ButtonBorderHoverColor?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ButtonCaption?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ButtonLink?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ButtonText?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ButtonTextColor?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ButtonTextHoverColor?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TextPadding?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type CallToActionBlockButtonBlockAutocompleteBackgroundColorArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CallToActionBlockButtonBlockAutocompleteBorderStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CallToActionBlockButtonBlockAutocompleteButtonBackgroundColorArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CallToActionBlockButtonBlockAutocompleteButtonBackgroundHoverColorArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CallToActionBlockButtonBlockAutocompleteButtonBorderColorArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CallToActionBlockButtonBlockAutocompleteButtonBorderHoverColorArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CallToActionBlockButtonBlockAutocompleteButtonCaptionArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CallToActionBlockButtonBlockAutocompleteButtonLinkArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CallToActionBlockButtonBlockAutocompleteButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CallToActionBlockButtonBlockAutocompleteButtonTextArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CallToActionBlockButtonBlockAutocompleteButtonTextColorArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CallToActionBlockButtonBlockAutocompleteButtonTextHoverColorArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CallToActionBlockButtonBlockAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CallToActionBlockButtonBlockAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CallToActionBlockButtonBlockAutocompleteTextPaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type CallToActionBlockButtonBlockFacet = {
@@ -7669,6 +9359,7 @@ export type CallToActionBlockOrderByInput = {
 
 export type CallToActionBlockOutput = {
   __typename?: 'CallToActionBlockOutput';
+  autocomplete?: Maybe<CallToActionBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<CallToActionBlockFacet>;
   items?: Maybe<Array<Maybe<CallToActionBlock>>>;
@@ -7746,8 +9437,62 @@ export type CaptchaElementBlock = IContent & {
   Url?: Maybe<Scalars['String']>;
   Validators?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type CaptchaElementBlockAutocomplete = {
+  __typename?: 'CaptchaElementBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type CaptchaElementBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CaptchaElementBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CaptchaElementBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CaptchaElementBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CaptchaElementBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CaptchaElementBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type CaptchaElementBlockFacet = {
@@ -7943,6 +9688,7 @@ export type CaptchaElementBlockOrderByInput = {
 
 export type CaptchaElementBlockOutput = {
   __typename?: 'CaptchaElementBlockOutput';
+  autocomplete?: Maybe<CaptchaElementBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<CaptchaElementBlockFacet>;
   items?: Maybe<Array<Maybe<CaptchaElementBlock>>>;
@@ -8020,8 +9766,64 @@ export type CarouselBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type CarouselBlockAutocomplete = {
+  __typename?: 'CarouselBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CarouselControls?: Maybe<CarouselBlockCarouselControlsAutocomplete>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type CarouselBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CarouselBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CarouselBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CarouselBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CarouselBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CarouselBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type CarouselBlockCarouselControls = {
@@ -8032,6 +9834,17 @@ export type CarouselBlockCarouselControls = {
   ShowControls?: Maybe<Scalars['Bool']>;
   ShowIndicators?: Maybe<Scalars['Bool']>;
   Theme?: Maybe<Scalars['String']>;
+};
+
+export type CarouselBlockCarouselControlsAutocomplete = {
+  __typename?: 'CarouselBlockCarouselControlsAutocomplete';
+  Theme?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type CarouselBlockCarouselControlsAutocompleteThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type CarouselBlockCarouselControlsFacet = {
@@ -8292,6 +10105,7 @@ export type CarouselBlockOrderByInput = {
 
 export type CarouselBlockOutput = {
   __typename?: 'CarouselBlockOutput';
+  autocomplete?: Maybe<CarouselBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<CarouselBlockFacet>;
   items?: Maybe<Array<Maybe<CarouselBlock>>>;
@@ -8370,8 +10184,62 @@ export type CarouselControls = IContent & {
   Theme?: Maybe<Scalars['String']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type CarouselControlsAutocomplete = {
+  __typename?: 'CarouselControlsAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type CarouselControlsAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CarouselControlsAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CarouselControlsAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CarouselControlsAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CarouselControlsAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CarouselControlsAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type CarouselControlsFacet = {
@@ -8573,6 +10441,7 @@ export type CarouselControlsOrderByInput = {
 
 export type CarouselControlsOutput = {
   __typename?: 'CarouselControlsOutput';
+  autocomplete?: Maybe<CarouselControlsAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<CarouselControlsFacet>;
   items?: Maybe<Array<Maybe<CarouselControls>>>;
@@ -8673,8 +10542,115 @@ export type CartPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type CartPageAutocomplete = {
+  __typename?: 'CartPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type CartPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CartPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CartPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CartPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CartPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CartPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CartPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CartPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CartPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CartPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CartPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CartPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CartPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type CartPageFacet = {
@@ -9071,6 +11047,7 @@ export type CartPageOrderByInput = {
 
 export type CartPageOutput = {
   __typename?: 'CartPageOutput';
+  autocomplete?: Maybe<CartPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<CartPageFacet>;
   items?: Maybe<Array<Maybe<CartPage>>>;
@@ -9167,8 +11144,96 @@ export type CatalogContent = IContent & {
   Url?: Maybe<Scalars['String']>;
   WeightBase?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type CatalogContentAutocomplete = {
+  __typename?: 'CatalogContentAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  DefaultCurrency?: Maybe<Array<Maybe<Scalars['String']>>>;
+  DefaultLanguage?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  LengthBase?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Owner?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+  WeightBase?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type CatalogContentAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CatalogContentAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CatalogContentAutocompleteDefaultCurrencyArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CatalogContentAutocompleteDefaultLanguageArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CatalogContentAutocompleteLengthBaseArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CatalogContentAutocompleteOwnerArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CatalogContentAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CatalogContentAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CatalogContentAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CatalogContentAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CatalogContentAutocompleteWeightBaseArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type CatalogContentFacet = {
@@ -9378,6 +11443,7 @@ export type CatalogContentOrderByInput = {
 
 export type CatalogContentOutput = {
   __typename?: 'CatalogContentOutput';
+  autocomplete?: Maybe<CatalogContentAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<CatalogContentFacet>;
   items?: Maybe<Array<Maybe<CatalogContent>>>;
@@ -9444,8 +11510,62 @@ export type Categories = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type CategoriesAutocomplete = {
+  __typename?: 'CategoriesAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type CategoriesAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CategoriesAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CategoriesAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CategoriesAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CategoriesAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CategoriesAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type CategoriesFacet = {
@@ -9590,6 +11710,7 @@ export type CategoriesOrderByInput = {
 
 export type CategoriesOutput = {
   __typename?: 'CategoriesOutput';
+  autocomplete?: Maybe<CategoriesAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<CategoriesFacet>;
   items?: Maybe<Array<Maybe<Categories>>>;
@@ -9659,8 +11780,64 @@ export type CategoryBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type CategoryBlockAutocomplete = {
+  __typename?: 'CategoryBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Catalog?: Maybe<ContentModelReferenceAutocomplete>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type CategoryBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CategoryBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CategoryBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CategoryBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CategoryBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CategoryBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type CategoryBlockFacet = {
@@ -9856,6 +12033,7 @@ export type CategoryBlockOrderByInput = {
 
 export type CategoryBlockOutput = {
   __typename?: 'CategoryBlockOutput';
+  autocomplete?: Maybe<CategoryBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<CategoryBlockFacet>;
   items?: Maybe<Array<Maybe<CategoryBlock>>>;
@@ -9906,6 +12084,24 @@ export type CategoryModel = {
   Description?: Maybe<Scalars['String']>;
   Id?: Maybe<Scalars['Int']>;
   Name?: Maybe<Scalars['String']>;
+};
+
+export type CategoryModelAutocomplete = {
+  __typename?: 'CategoryModelAutocomplete';
+  Description?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Name?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type CategoryModelAutocompleteDescriptionArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CategoryModelAutocompleteNameArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type CategoryModelFacet = {
@@ -10001,8 +12197,115 @@ export type CheckoutPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type CheckoutPageAutocomplete = {
+  __typename?: 'CheckoutPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type CheckoutPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CheckoutPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CheckoutPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CheckoutPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CheckoutPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CheckoutPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CheckoutPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CheckoutPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CheckoutPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CheckoutPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CheckoutPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CheckoutPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CheckoutPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type CheckoutPageFacet = {
@@ -10387,6 +12690,7 @@ export type CheckoutPageOrderByInput = {
 
 export type CheckoutPageOutput = {
   __typename?: 'CheckoutPageOutput';
+  autocomplete?: Maybe<CheckoutPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<CheckoutPageFacet>;
   items?: Maybe<Array<Maybe<CheckoutPage>>>;
@@ -10482,8 +12786,62 @@ export type ChoiceElementBlock = IContent & {
   Url?: Maybe<Scalars['String']>;
   Validators?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type ChoiceElementBlockAutocomplete = {
+  __typename?: 'ChoiceElementBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type ChoiceElementBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ChoiceElementBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ChoiceElementBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ChoiceElementBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ChoiceElementBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ChoiceElementBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type ChoiceElementBlockFacet = {
@@ -10695,6 +13053,7 @@ export type ChoiceElementBlockOrderByInput = {
 
 export type ChoiceElementBlockOutput = {
   __typename?: 'ChoiceElementBlockOutput';
+  autocomplete?: Maybe<ChoiceElementBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<ChoiceElementBlockFacet>;
   items?: Maybe<Array<Maybe<ChoiceElementBlock>>>;
@@ -10767,8 +13126,70 @@ export type CodingFile = IContent & {
   Thumbnail?: Maybe<BlobModel>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type CodingFileAutocomplete = {
+  __typename?: 'CodingFileAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  MimeType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Thumbnail?: Maybe<BlobModelAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type CodingFileAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CodingFileAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CodingFileAutocompleteMimeTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CodingFileAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CodingFileAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CodingFileAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CodingFileAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type CodingFileFacet = {
@@ -10945,6 +13366,7 @@ export type CodingFileOrderByInput = {
 
 export type CodingFileOutput = {
   __typename?: 'CodingFileOutput';
+  autocomplete?: Maybe<CodingFileAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<CodingFileFacet>;
   items?: Maybe<Array<Maybe<CodingFile>>>;
@@ -11046,8 +13468,117 @@ export type CollectionPage = IContent & {
   Url?: Maybe<Scalars['String']>;
   Video?: Maybe<ContentModelReference>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type CollectionPageAutocomplete = {
+  __typename?: 'CollectionPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Image?: Maybe<ContentModelReferenceAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Video?: Maybe<ContentModelReferenceAutocomplete>;
+};
+
+
+export type CollectionPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CollectionPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CollectionPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CollectionPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CollectionPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CollectionPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CollectionPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CollectionPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CollectionPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CollectionPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CollectionPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CollectionPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CollectionPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type CollectionPageFacet = {
@@ -11460,6 +13991,7 @@ export type CollectionPageOrderByInput = {
 
 export type CollectionPageOutput = {
   __typename?: 'CollectionPageOutput';
+  autocomplete?: Maybe<CollectionPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<CollectionPageFacet>;
   items?: Maybe<Array<Maybe<CollectionPage>>>;
@@ -11567,8 +14099,63 @@ export type CommentsBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type CommentsBlockAutocomplete = {
+  __typename?: 'CommentsBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type CommentsBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommentsBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommentsBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommentsBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommentsBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommentsBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type CommentsBlockFacet = {
@@ -11803,6 +14390,7 @@ export type CommentsBlockOrderByInput = {
 
 export type CommentsBlockOutput = {
   __typename?: 'CommentsBlockOutput';
+  autocomplete?: Maybe<CommentsBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<CommentsBlockFacet>;
   items?: Maybe<Array<Maybe<CommentsBlock>>>;
@@ -11915,8 +14503,120 @@ export type CommunityPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type CommunityPageAutocomplete = {
+  __typename?: 'CommunityPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  Comments?: Maybe<CommunityPageCommentsBlockAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  GroupAdmission?: Maybe<CommunityPageGroupAdmissionBlockAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Memberships?: Maybe<CommunityPageMembershipDisplayBlockAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  Ratings?: Maybe<CommunityPageRatingBlockAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Subscriptions?: Maybe<CommunityPageSubscriptionBlockAutocomplete>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type CommunityPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommunityPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommunityPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommunityPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommunityPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommunityPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommunityPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommunityPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommunityPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommunityPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommunityPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommunityPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommunityPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type CommunityPageCommentsBlock = {
@@ -11932,6 +14632,39 @@ export type CommunityPageCommentsBlock = {
   Padding?: Maybe<Scalars['String']>;
   SendActivity?: Maybe<Scalars['Bool']>;
   ShowHeading?: Maybe<Scalars['Bool']>;
+};
+
+export type CommunityPageCommentsBlockAutocomplete = {
+  __typename?: 'CommunityPageCommentsBlockAutocomplete';
+  BackgroundColor?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Heading?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type CommunityPageCommentsBlockAutocompleteBackgroundColorArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommunityPageCommentsBlockAutocompleteHeadingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommunityPageCommentsBlockAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommunityPageCommentsBlockAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type CommunityPageCommentsBlockFacet = {
@@ -12386,6 +15119,24 @@ export type CommunityPageGroupAdmissionBlock = {
   ShowHeading?: Maybe<Scalars['Bool']>;
 };
 
+export type CommunityPageGroupAdmissionBlockAutocomplete = {
+  __typename?: 'CommunityPageGroupAdmissionBlockAutocomplete';
+  GroupName?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Heading?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type CommunityPageGroupAdmissionBlockAutocompleteGroupNameArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommunityPageGroupAdmissionBlockAutocompleteHeadingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
 export type CommunityPageGroupAdmissionBlockFacet = {
   __typename?: 'CommunityPageGroupAdmissionBlockFacet';
   GroupName?: Maybe<Array<Maybe<StringFacet>>>;
@@ -12440,6 +15191,46 @@ export type CommunityPageMembershipDisplayBlock = {
   NumberOfMembers?: Maybe<Scalars['Int']>;
   Padding?: Maybe<Scalars['String']>;
   ShowHeading?: Maybe<Scalars['Bool']>;
+};
+
+export type CommunityPageMembershipDisplayBlockAutocomplete = {
+  __typename?: 'CommunityPageMembershipDisplayBlockAutocomplete';
+  BackgroundColor?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  GroupName?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Heading?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type CommunityPageMembershipDisplayBlockAutocompleteBackgroundColorArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommunityPageMembershipDisplayBlockAutocompleteGroupNameArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommunityPageMembershipDisplayBlockAutocompleteHeadingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommunityPageMembershipDisplayBlockAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommunityPageMembershipDisplayBlockAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type CommunityPageMembershipDisplayBlockFacet = {
@@ -12595,6 +15386,7 @@ export type CommunityPageOrderByInput = {
 
 export type CommunityPageOutput = {
   __typename?: 'CommunityPageOutput';
+  autocomplete?: Maybe<CommunityPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<CommunityPageFacet>;
   items?: Maybe<Array<Maybe<CommunityPage>>>;
@@ -12616,6 +15408,39 @@ export type CommunityPageRatingBlock = {
   Padding?: Maybe<Scalars['String']>;
   SendActivity?: Maybe<Scalars['Bool']>;
   ShowHeading?: Maybe<Scalars['Bool']>;
+};
+
+export type CommunityPageRatingBlockAutocomplete = {
+  __typename?: 'CommunityPageRatingBlockAutocomplete';
+  BackgroundColor?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Heading?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type CommunityPageRatingBlockAutocompleteBackgroundColorArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommunityPageRatingBlockAutocompleteHeadingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommunityPageRatingBlockAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommunityPageRatingBlockAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type CommunityPageRatingBlockFacet = {
@@ -12714,6 +15539,39 @@ export type CommunityPageSubscriptionBlock = {
   Margin?: Maybe<Scalars['String']>;
   Padding?: Maybe<Scalars['String']>;
   ShowHeading?: Maybe<Scalars['Bool']>;
+};
+
+export type CommunityPageSubscriptionBlockAutocomplete = {
+  __typename?: 'CommunityPageSubscriptionBlockAutocomplete';
+  BackgroundColor?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Heading?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type CommunityPageSubscriptionBlockAutocompleteBackgroundColorArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommunityPageSubscriptionBlockAutocompleteHeadingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommunityPageSubscriptionBlockAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CommunityPageSubscriptionBlockAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type CommunityPageSubscriptionBlockFacet = {
@@ -12883,8 +15741,63 @@ export type ContainerBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type ContainerBlockAutocomplete = {
+  __typename?: 'ContainerBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type ContainerBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ContainerBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ContainerBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ContainerBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ContainerBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ContainerBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type ContainerBlockFacet = {
@@ -13080,6 +15993,7 @@ export type ContainerBlockOrderByInput = {
 
 export type ContainerBlockOutput = {
   __typename?: 'ContainerBlockOutput';
+  autocomplete?: Maybe<ContainerBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<ContainerBlockFacet>;
   items?: Maybe<Array<Maybe<ContainerBlock>>>;
@@ -13146,7 +16060,9 @@ export type Content = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
 };
 
@@ -13154,13 +16070,35 @@ export type ContentAreaItemModel = {
   __typename?: 'ContentAreaItemModel';
   ContentLink?: Maybe<ContentModelReference>;
   DisplayOption?: Maybe<Scalars['String']>;
+  InlineBlock?: Maybe<InlineBlockPropertyModel>;
   Tag?: Maybe<Scalars['String']>;
+};
+
+export type ContentAreaItemModelAutocomplete = {
+  __typename?: 'ContentAreaItemModelAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  DisplayOption?: Maybe<Array<Maybe<Scalars['String']>>>;
+  InlineBlock?: Maybe<InlineBlockPropertyModelAutocomplete>;
+  Tag?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type ContentAreaItemModelAutocompleteDisplayOptionArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ContentAreaItemModelAutocompleteTagArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type ContentAreaItemModelFacet = {
   __typename?: 'ContentAreaItemModelFacet';
   ContentLink?: Maybe<ContentModelReferenceFacet>;
   DisplayOption?: Maybe<Array<Maybe<StringFacet>>>;
+  InlineBlock?: Maybe<InlineBlockPropertyModelFacet>;
   Tag?: Maybe<Array<Maybe<StringFacet>>>;
 };
 
@@ -13183,6 +16121,7 @@ export type ContentAreaItemModelFacetTagArgs = {
 export type ContentAreaItemModelOrderByInput = {
   ContentLink?: InputMaybe<ContentModelReferenceOrderByInput>;
   DisplayOption?: InputMaybe<OrderBy>;
+  InlineBlock?: InputMaybe<InlineBlockPropertyModelOrderByInput>;
   Tag?: InputMaybe<OrderBy>;
 };
 
@@ -13190,6 +16129,7 @@ export type ContentAreaItemModelSearch = {
   __typename?: 'ContentAreaItemModelSearch';
   ContentLink?: Maybe<ContentModelReferenceSearch>;
   DisplayOption?: Maybe<Scalars['String']>;
+  InlineBlock?: Maybe<InlineBlockPropertyModelSearch>;
   Tag?: Maybe<Scalars['String']>;
 };
 
@@ -13197,6 +16137,7 @@ export type ContentAreaItemModelSearchFacet = {
   __typename?: 'ContentAreaItemModelSearchFacet';
   ContentLink?: Maybe<ContentModelReferenceSearchFacet>;
   DisplayOption?: Maybe<Array<Maybe<StringFacet>>>;
+  InlineBlock?: Maybe<InlineBlockPropertyModelSearchFacet>;
   Tag?: Maybe<Array<Maybe<StringFacet>>>;
 };
 
@@ -13219,19 +16160,73 @@ export type ContentAreaItemModelSearchFacetTagArgs = {
 export type ContentAreaItemModelSearchOrderByInput = {
   ContentLink?: InputMaybe<ContentModelReferenceSearchOrderByInput>;
   DisplayOption?: InputMaybe<OrderBy>;
+  InlineBlock?: InputMaybe<InlineBlockPropertyModelSearchOrderByInput>;
   Tag?: InputMaybe<OrderBy>;
 };
 
 export type ContentAreaItemModelSearchWhereInput = {
   ContentLink?: InputMaybe<ContentModelReferenceSearchWhereInput>;
   DisplayOption?: InputMaybe<SearchableStringFilterInput>;
+  InlineBlock?: InputMaybe<InlineBlockPropertyModelSearchWhereInput>;
   Tag?: InputMaybe<SearchableStringFilterInput>;
 };
 
 export type ContentAreaItemModelWhereInput = {
   ContentLink?: InputMaybe<ContentModelReferenceWhereInput>;
   DisplayOption?: InputMaybe<StringFilterInput>;
+  InlineBlock?: InputMaybe<InlineBlockPropertyModelWhereInput>;
   Tag?: InputMaybe<StringFilterInput>;
+};
+
+export type ContentAutocomplete = {
+  __typename?: 'ContentAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type ContentAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ContentAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ContentAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ContentAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ContentAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ContentAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type ContentFacet = {
@@ -13357,6 +16352,31 @@ export type ContentLanguageModel = {
   Name?: Maybe<Scalars['String']>;
 };
 
+export type ContentLanguageModelAutocomplete = {
+  __typename?: 'ContentLanguageModelAutocomplete';
+  DisplayName?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Link?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Name?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type ContentLanguageModelAutocompleteDisplayNameArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ContentLanguageModelAutocompleteLinkArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ContentLanguageModelAutocompleteNameArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
 export type ContentLanguageModelFacet = {
   __typename?: 'ContentLanguageModelFacet';
   DisplayName?: Maybe<Array<Maybe<StringFacet>>>;
@@ -13459,6 +16479,32 @@ export type ContentModelReference = {
   ProviderName?: Maybe<Scalars['String']>;
   Url?: Maybe<Scalars['String']>;
   WorkId?: Maybe<Scalars['Int']>;
+};
+
+export type ContentModelReferenceAutocomplete = {
+  __typename?: 'ContentModelReferenceAutocomplete';
+  GuidValue?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  ProviderName?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type ContentModelReferenceAutocompleteGuidValueArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ContentModelReferenceAutocompleteProviderNameArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ContentModelReferenceAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type ContentModelReferenceFacet = {
@@ -13620,6 +16666,7 @@ export type ContentOrderByInput = {
 
 export type ContentOutput = {
   __typename?: 'ContentOutput';
+  autocomplete?: Maybe<ContentAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<ContentFacet>;
   items?: Maybe<Array<Maybe<IContent>>>;
@@ -13639,6 +16686,16 @@ export type ContentRootsModel = {
   SiteAssetsRoot?: Maybe<ContentModelReference>;
   StartPage?: Maybe<ContentModelReference>;
   WasteBasket?: Maybe<ContentModelReference>;
+};
+
+export type ContentRootsModelAutocomplete = {
+  __typename?: 'ContentRootsModelAutocomplete';
+  ContentAssetsRoot?: Maybe<ContentModelReferenceAutocomplete>;
+  GlobalAssetsRoot?: Maybe<ContentModelReferenceAutocomplete>;
+  RootPage?: Maybe<ContentModelReferenceAutocomplete>;
+  SiteAssetsRoot?: Maybe<ContentModelReferenceAutocomplete>;
+  StartPage?: Maybe<ContentModelReferenceAutocomplete>;
+  WasteBasket?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type ContentRootsModelFacet = {
@@ -13718,8 +16775,62 @@ export type CouponData = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type CouponDataAutocomplete = {
+  __typename?: 'CouponDataAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type CouponDataAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CouponDataAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CouponDataAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CouponDataAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CouponDataAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CouponDataAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type CouponDataFacet = {
@@ -13874,6 +16985,7 @@ export type CouponDataOrderByInput = {
 
 export type CouponDataOutput = {
   __typename?: 'CouponDataOutput';
+  autocomplete?: Maybe<CouponDataAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<CouponDataFacet>;
   items?: Maybe<Array<Maybe<CouponData>>>;
@@ -13967,8 +17079,115 @@ export type CreditCardPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type CreditCardPageAutocomplete = {
+  __typename?: 'CreditCardPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type CreditCardPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CreditCardPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CreditCardPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CreditCardPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CreditCardPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CreditCardPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CreditCardPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CreditCardPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CreditCardPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CreditCardPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CreditCardPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CreditCardPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CreditCardPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type CreditCardPageFacet = {
@@ -14363,6 +17582,7 @@ export type CreditCardPageOrderByInput = {
 
 export type CreditCardPageOutput = {
   __typename?: 'CreditCardPageOutput';
+  autocomplete?: Maybe<CreditCardPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<CreditCardPageFacet>;
   items?: Maybe<Array<Maybe<CreditCardPage>>>;
@@ -14463,8 +17683,64 @@ export type CustomViewConfigurationBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type CustomViewConfigurationBlockAutocomplete = {
+  __typename?: 'CustomViewConfigurationBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  NewContentRoot?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Root?: Maybe<ContentModelReferenceAutocomplete>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type CustomViewConfigurationBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CustomViewConfigurationBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CustomViewConfigurationBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CustomViewConfigurationBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CustomViewConfigurationBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type CustomViewConfigurationBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type CustomViewConfigurationBlockFacet = {
@@ -14640,6 +17916,7 @@ export type CustomViewConfigurationBlockOrderByInput = {
 
 export type CustomViewConfigurationBlockOutput = {
   __typename?: 'CustomViewConfigurationBlockOutput';
+  autocomplete?: Maybe<CustomViewConfigurationBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<CustomViewConfigurationBlockFacet>;
   items?: Maybe<Array<Maybe<CustomViewConfigurationBlock>>>;
@@ -14709,8 +17986,70 @@ export type DamAsset = IContent & {
   Thumbnail?: Maybe<BlobModel>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type DamAssetAutocomplete = {
+  __typename?: 'DAMAssetAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  MimeType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Thumbnail?: Maybe<BlobModelAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type DamAssetAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DamAssetAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DamAssetAutocompleteMimeTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DamAssetAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DamAssetAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DamAssetAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DamAssetAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type DamAssetFacet = {
@@ -14877,6 +18216,7 @@ export type DamAssetOrderByInput = {
 
 export type DamAssetOutput = {
   __typename?: 'DAMAssetOutput';
+  autocomplete?: Maybe<DamAssetAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<DamAssetFacet>;
   items?: Maybe<Array<Maybe<DamAsset>>>;
@@ -14944,8 +18284,70 @@ export type DamImageAsset = IContent & {
   Thumbnail?: Maybe<BlobModel>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type DamImageAssetAutocomplete = {
+  __typename?: 'DAMImageAssetAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  MimeType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Thumbnail?: Maybe<BlobModelAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type DamImageAssetAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DamImageAssetAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DamImageAssetAutocompleteMimeTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DamImageAssetAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DamImageAssetAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DamImageAssetAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DamImageAssetAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type DamImageAssetFacet = {
@@ -15112,6 +18514,7 @@ export type DamImageAssetOrderByInput = {
 
 export type DamImageAssetOutput = {
   __typename?: 'DAMImageAssetOutput';
+  autocomplete?: Maybe<DamImageAssetAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<DamImageAssetFacet>;
   items?: Maybe<Array<Maybe<DamImageAsset>>>;
@@ -15179,8 +18582,70 @@ export type DamVideoAsset = IContent & {
   Thumbnail?: Maybe<BlobModel>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type DamVideoAssetAutocomplete = {
+  __typename?: 'DAMVideoAssetAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  MimeType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Thumbnail?: Maybe<BlobModelAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type DamVideoAssetAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DamVideoAssetAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DamVideoAssetAutocompleteMimeTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DamVideoAssetAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DamVideoAssetAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DamVideoAssetAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DamVideoAssetAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type DamVideoAssetFacet = {
@@ -15347,6 +18812,7 @@ export type DamVideoAssetOrderByInput = {
 
 export type DamVideoAssetOutput = {
   __typename?: 'DAMVideoAssetOutput';
+  autocomplete?: Maybe<DamVideoAssetAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<DamVideoAssetFacet>;
   items?: Maybe<Array<Maybe<DamVideoAsset>>>;
@@ -15450,8 +18916,62 @@ export type DateTimeElementBlock = IContent & {
   Url?: Maybe<Scalars['String']>;
   Validators?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type DateTimeElementBlockAutocomplete = {
+  __typename?: 'DateTimeElementBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type DateTimeElementBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DateTimeElementBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DateTimeElementBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DateTimeElementBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DateTimeElementBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DateTimeElementBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type DateTimeElementBlockFacet = {
@@ -15670,6 +19190,7 @@ export type DateTimeElementBlockOrderByInput = {
 
 export type DateTimeElementBlockOutput = {
   __typename?: 'DateTimeElementBlockOutput';
+  autocomplete?: Maybe<DateTimeElementBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<DateTimeElementBlockFacet>;
   items?: Maybe<Array<Maybe<DateTimeElementBlock>>>;
@@ -15746,8 +19267,62 @@ export type DateTimeRangeElementBlock = IContent & {
   Url?: Maybe<Scalars['String']>;
   Validators?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type DateTimeRangeElementBlockAutocomplete = {
+  __typename?: 'DateTimeRangeElementBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type DateTimeRangeElementBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DateTimeRangeElementBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DateTimeRangeElementBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DateTimeRangeElementBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DateTimeRangeElementBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DateTimeRangeElementBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type DateTimeRangeElementBlockFacet = {
@@ -15966,6 +19541,7 @@ export type DateTimeRangeElementBlockOrderByInput = {
 
 export type DateTimeRangeElementBlockOutput = {
   __typename?: 'DateTimeRangeElementBlockOutput';
+  autocomplete?: Maybe<DateTimeRangeElementBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<DateTimeRangeElementBlockFacet>;
   items?: Maybe<Array<Maybe<DateTimeRangeElementBlock>>>;
@@ -16037,8 +19613,63 @@ export type DiscountItems = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type DiscountItemsAutocomplete = {
+  __typename?: 'DiscountItemsAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Items?: Maybe<ContentModelReferenceAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type DiscountItemsAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DiscountItemsAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DiscountItemsAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DiscountItemsAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DiscountItemsAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DiscountItemsAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type DiscountItemsFacet = {
@@ -16202,6 +19833,7 @@ export type DiscountItemsOrderByInput = {
 
 export type DiscountItemsOutput = {
   __typename?: 'DiscountItemsOutput';
+  autocomplete?: Maybe<DiscountItemsAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<DiscountItemsFacet>;
   items?: Maybe<Array<Maybe<DiscountItems>>>;
@@ -16307,13 +19939,20 @@ export type DynamicProduct = IContent & {
   VariantsReference?: Maybe<ContentModelReference>;
   Warranty?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
 };
 
 export type DynamicProductAssociations = {
   __typename?: 'DynamicProductAssociations';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type DynamicProductAssociationsAutocomplete = {
+  __typename?: 'DynamicProductAssociationsAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type DynamicProductAssociationsFacet = {
@@ -16329,9 +19968,79 @@ export type DynamicProductAssociationsWhereInput = {
   ContentLink?: InputMaybe<ContentModelReferenceWhereInput>;
 };
 
+export type DynamicProductAutocomplete = {
+  __typename?: 'DynamicProductAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Associations?: Maybe<DynamicProductAssociationsAutocomplete>;
+  Categories?: Maybe<DynamicProductCategoriesAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentEntries?: Maybe<DynamicProductRelationsAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ScriptFiles?: Maybe<LinkItemNodeAutocomplete>;
+  SeoInformation?: Maybe<DynamicProductSeoInformationAutocomplete>;
+  SeoUri?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+  VariantsReference?: Maybe<ContentModelReferenceAutocomplete>;
+};
+
+
+export type DynamicProductAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DynamicProductAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DynamicProductAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DynamicProductAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DynamicProductAutocompleteSeoUriArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DynamicProductAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DynamicProductAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
 export type DynamicProductCategories = {
   __typename?: 'DynamicProductCategories';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type DynamicProductCategoriesAutocomplete = {
+  __typename?: 'DynamicProductCategoriesAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type DynamicProductCategoriesFacet = {
@@ -16804,6 +20513,7 @@ export type DynamicProductOrderByInput = {
 
 export type DynamicProductOutput = {
   __typename?: 'DynamicProductOutput';
+  autocomplete?: Maybe<DynamicProductAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<DynamicProductFacet>;
   items?: Maybe<Array<Maybe<DynamicProduct>>>;
@@ -16818,6 +20528,11 @@ export type DynamicProductOutputTotalArgs = {
 export type DynamicProductRelations = {
   __typename?: 'DynamicProductRelations';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type DynamicProductRelationsAutocomplete = {
+  __typename?: 'DynamicProductRelationsAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type DynamicProductRelationsFacet = {
@@ -16838,6 +20553,31 @@ export type DynamicProductSeoInformation = {
   Description?: Maybe<Scalars['String']>;
   Keywords?: Maybe<Scalars['String']>;
   Title?: Maybe<Scalars['String']>;
+};
+
+export type DynamicProductSeoInformationAutocomplete = {
+  __typename?: 'DynamicProductSeoInformationAutocomplete';
+  Description?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Keywords?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Title?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type DynamicProductSeoInformationAutocompleteDescriptionArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DynamicProductSeoInformationAutocompleteKeywordsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DynamicProductSeoInformationAutocompleteTitleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type DynamicProductSeoInformationFacet = {
@@ -17007,13 +20747,20 @@ export type DynamicVariant = IContent & {
   VirtualProductRole?: Maybe<Scalars['String']>;
   Weight?: Maybe<Scalars['Float']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
 };
 
 export type DynamicVariantAssociations = {
   __typename?: 'DynamicVariantAssociations';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type DynamicVariantAssociationsAutocomplete = {
+  __typename?: 'DynamicVariantAssociationsAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type DynamicVariantAssociationsFacet = {
@@ -17029,9 +20776,80 @@ export type DynamicVariantAssociationsWhereInput = {
   ContentLink?: InputMaybe<ContentModelReferenceWhereInput>;
 };
 
+export type DynamicVariantAutocomplete = {
+  __typename?: 'DynamicVariantAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Associations?: Maybe<DynamicVariantAssociationsAutocomplete>;
+  Categories?: Maybe<DynamicVariantCategoriesAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  InventoryReference?: Maybe<ContentModelReferenceAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentEntries?: Maybe<DynamicVariantRelationsAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  PriceReference?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ScriptFiles?: Maybe<LinkItemNodeAutocomplete>;
+  SeoInformation?: Maybe<DynamicVariantSeoInformationAutocomplete>;
+  SeoUri?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type DynamicVariantAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DynamicVariantAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DynamicVariantAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DynamicVariantAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DynamicVariantAutocompleteSeoUriArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DynamicVariantAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DynamicVariantAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
 export type DynamicVariantCategories = {
   __typename?: 'DynamicVariantCategories';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type DynamicVariantCategoriesAutocomplete = {
+  __typename?: 'DynamicVariantCategoriesAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type DynamicVariantCategoriesFacet = {
@@ -17462,6 +21280,7 @@ export type DynamicVariantOrderByInput = {
 
 export type DynamicVariantOutput = {
   __typename?: 'DynamicVariantOutput';
+  autocomplete?: Maybe<DynamicVariantAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<DynamicVariantFacet>;
   items?: Maybe<Array<Maybe<DynamicVariant>>>;
@@ -17476,6 +21295,11 @@ export type DynamicVariantOutputTotalArgs = {
 export type DynamicVariantRelations = {
   __typename?: 'DynamicVariantRelations';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type DynamicVariantRelationsAutocomplete = {
+  __typename?: 'DynamicVariantRelationsAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type DynamicVariantRelationsFacet = {
@@ -17496,6 +21320,31 @@ export type DynamicVariantSeoInformation = {
   Description?: Maybe<Scalars['String']>;
   Keywords?: Maybe<Scalars['String']>;
   Title?: Maybe<Scalars['String']>;
+};
+
+export type DynamicVariantSeoInformationAutocomplete = {
+  __typename?: 'DynamicVariantSeoInformationAutocomplete';
+  Description?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Keywords?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Title?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type DynamicVariantSeoInformationAutocompleteDescriptionArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DynamicVariantSeoInformationAutocompleteKeywordsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type DynamicVariantSeoInformationAutocompleteTitleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type DynamicVariantSeoInformationFacet = {
@@ -17676,8 +21525,63 @@ export type ElevatedRoleBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type ElevatedRoleBlockAutocomplete = {
+  __typename?: 'ElevatedRoleBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type ElevatedRoleBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ElevatedRoleBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ElevatedRoleBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ElevatedRoleBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ElevatedRoleBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ElevatedRoleBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type ElevatedRoleBlockFacet = {
@@ -17873,6 +21777,7 @@ export type ElevatedRoleBlockOrderByInput = {
 
 export type ElevatedRoleBlockOutput = {
   __typename?: 'ElevatedRoleBlockOutput';
+  autocomplete?: Maybe<ElevatedRoleBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<ElevatedRoleBlockFacet>;
   items?: Maybe<Array<Maybe<ElevatedRoleBlock>>>;
@@ -17943,8 +21848,62 @@ export type ExistsFilterBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type ExistsFilterBlockAutocomplete = {
+  __typename?: 'ExistsFilterBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type ExistsFilterBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ExistsFilterBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ExistsFilterBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ExistsFilterBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ExistsFilterBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ExistsFilterBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type ExistsFilterBlockFacet = {
@@ -18099,6 +22058,7 @@ export type ExistsFilterBlockOrderByInput = {
 
 export type ExistsFilterBlockOutput = {
   __typename?: 'ExistsFilterBlockOutput';
+  autocomplete?: Maybe<ExistsFilterBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<ExistsFilterBlockFacet>;
   items?: Maybe<Array<Maybe<ExistsFilterBlock>>>;
@@ -18170,8 +22130,63 @@ export type FacebookBlock = IContent & {
   Url?: Maybe<Scalars['String']>;
   Width?: Maybe<Scalars['Int']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type FacebookBlockAutocomplete = {
+  __typename?: 'FacebookBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type FacebookBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FacebookBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FacebookBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FacebookBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FacebookBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FacebookBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type FacebookBlockFacet = {
@@ -18379,6 +22394,7 @@ export type FacebookBlockOrderByInput = {
 
 export type FacebookBlockOutput = {
   __typename?: 'FacebookBlockOutput';
+  autocomplete?: Maybe<FacebookBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<FacebookBlockFacet>;
   items?: Maybe<Array<Maybe<FacebookBlock>>>;
@@ -18458,8 +22474,63 @@ export type FeedBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type FeedBlockAutocomplete = {
+  __typename?: 'FeedBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type FeedBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FeedBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FeedBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FeedBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FeedBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FeedBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type FeedBlockFacet = {
@@ -18680,6 +22751,7 @@ export type FeedBlockOrderByInput = {
 
 export type FeedBlockOutput = {
   __typename?: 'FeedBlockOutput';
+  autocomplete?: Maybe<FeedBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<FeedBlockFacet>;
   items?: Maybe<Array<Maybe<FeedBlock>>>;
@@ -18757,8 +22829,62 @@ export type FileUploadElementBlock = IContent & {
   Url?: Maybe<Scalars['String']>;
   Validators?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type FileUploadElementBlockAutocomplete = {
+  __typename?: 'FileUploadElementBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type FileUploadElementBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FileUploadElementBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FileUploadElementBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FileUploadElementBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FileUploadElementBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FileUploadElementBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type FileUploadElementBlockFacet = {
@@ -18977,6 +23103,7 @@ export type FileUploadElementBlockOrderByInput = {
 
 export type FileUploadElementBlockOutput = {
   __typename?: 'FileUploadElementBlockOutput';
+  autocomplete?: Maybe<FileUploadElementBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<FileUploadElementBlockFacet>;
   items?: Maybe<Array<Maybe<FileUploadElementBlock>>>;
@@ -19054,8 +23181,63 @@ export type FilterActivitiesBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type FilterActivitiesBlockAutocomplete = {
+  __typename?: 'FilterActivitiesBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type FilterActivitiesBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FilterActivitiesBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FilterActivitiesBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FilterActivitiesBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FilterActivitiesBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FilterActivitiesBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type FilterActivitiesBlockFacet = {
@@ -19259,6 +23441,7 @@ export type FilterActivitiesBlockOrderByInput = {
 
 export type FilterActivitiesBlockOutput = {
   __typename?: 'FilterActivitiesBlockOutput';
+  autocomplete?: Maybe<FilterActivitiesBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<FilterActivitiesBlockFacet>;
   items?: Maybe<Array<Maybe<FilterActivitiesBlock>>>;
@@ -19335,8 +23518,63 @@ export type FilterContinentsBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type FilterContinentsBlockAutocomplete = {
+  __typename?: 'FilterContinentsBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type FilterContinentsBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FilterContinentsBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FilterContinentsBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FilterContinentsBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FilterContinentsBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FilterContinentsBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type FilterContinentsBlockFacet = {
@@ -19540,6 +23778,7 @@ export type FilterContinentsBlockOrderByInput = {
 
 export type FilterContinentsBlockOutput = {
   __typename?: 'FilterContinentsBlockOutput';
+  autocomplete?: Maybe<FilterContinentsBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<FilterContinentsBlockFacet>;
   items?: Maybe<Array<Maybe<FilterContinentsBlock>>>;
@@ -19616,8 +23855,63 @@ export type FilterDistancesBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type FilterDistancesBlockAutocomplete = {
+  __typename?: 'FilterDistancesBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type FilterDistancesBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FilterDistancesBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FilterDistancesBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FilterDistancesBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FilterDistancesBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FilterDistancesBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type FilterDistancesBlockFacet = {
@@ -19821,6 +24115,7 @@ export type FilterDistancesBlockOrderByInput = {
 
 export type FilterDistancesBlockOutput = {
   __typename?: 'FilterDistancesBlockOutput';
+  autocomplete?: Maybe<FilterDistancesBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<FilterDistancesBlockFacet>;
   items?: Maybe<Array<Maybe<FilterDistancesBlock>>>;
@@ -19897,8 +24192,63 @@ export type FilterTemperaturesBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type FilterTemperaturesBlockAutocomplete = {
+  __typename?: 'FilterTemperaturesBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type FilterTemperaturesBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FilterTemperaturesBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FilterTemperaturesBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FilterTemperaturesBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FilterTemperaturesBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FilterTemperaturesBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type FilterTemperaturesBlockFacet = {
@@ -20102,6 +24452,7 @@ export type FilterTemperaturesBlockOrderByInput = {
 
 export type FilterTemperaturesBlockOutput = {
   __typename?: 'FilterTemperaturesBlockOutput';
+  autocomplete?: Maybe<FilterTemperaturesBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<FilterTemperaturesBlockFacet>;
   items?: Maybe<Array<Maybe<FilterTemperaturesBlock>>>;
@@ -20172,8 +24523,63 @@ export type FixedPricePurchaseQuantity = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type FixedPricePurchaseQuantityAutocomplete = {
+  __typename?: 'FixedPricePurchaseQuantityAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Items?: Maybe<ContentModelReferenceAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type FixedPricePurchaseQuantityAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FixedPricePurchaseQuantityAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FixedPricePurchaseQuantityAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FixedPricePurchaseQuantityAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FixedPricePurchaseQuantityAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FixedPricePurchaseQuantityAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type FixedPricePurchaseQuantityFacet = {
@@ -20337,6 +24743,7 @@ export type FixedPricePurchaseQuantityOrderByInput = {
 
 export type FixedPricePurchaseQuantityOutput = {
   __typename?: 'FixedPricePurchaseQuantityOutput';
+  autocomplete?: Maybe<FixedPricePurchaseQuantityAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<FixedPricePurchaseQuantityFacet>;
   items?: Maybe<Array<Maybe<FixedPricePurchaseQuantity>>>;
@@ -20424,8 +24831,62 @@ export type FolderPage = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type FolderPageAutocomplete = {
+  __typename?: 'FolderPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type FolderPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FolderPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FolderPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FolderPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FolderPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FolderPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type FolderPageFacet = {
@@ -20570,6 +25031,7 @@ export type FolderPageOrderByInput = {
 
 export type FolderPageOutput = {
   __typename?: 'FolderPageOutput';
+  autocomplete?: Maybe<FolderPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<FolderPageFacet>;
   items?: Maybe<Array<Maybe<FolderPage>>>;
@@ -20646,8 +25108,69 @@ export type FormContainerBlock = IContent & {
   Title?: Maybe<Scalars['String']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type FormContainerBlockAutocomplete = {
+  __typename?: 'FormContainerBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RedirectToPage?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type FormContainerBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FormContainerBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FormContainerBlockAutocompleteRedirectToPageArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FormContainerBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FormContainerBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FormContainerBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FormContainerBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type FormContainerBlockFacet = {
@@ -20944,6 +25467,7 @@ export type FormContainerBlockOrderByInput = {
 
 export type FormContainerBlockOutput = {
   __typename?: 'FormContainerBlockOutput';
+  autocomplete?: Maybe<FormContainerBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<FormContainerBlockFacet>;
   items?: Maybe<Array<Maybe<FormContainerBlock>>>;
@@ -21026,8 +25550,70 @@ export type FormStepBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type FormStepBlockAutocomplete = {
+  __typename?: 'FormStepBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  AttachedContentLink?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  DependField?: Maybe<ContentModelReferenceAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type FormStepBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FormStepBlockAutocompleteAttachedContentLinkArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FormStepBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FormStepBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FormStepBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FormStepBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FormStepBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type FormStepBlockFacet = {
@@ -21221,6 +25807,7 @@ export type FormStepBlockOrderByInput = {
 
 export type FormStepBlockOutput = {
   __typename?: 'FormStepBlockOutput';
+  autocomplete?: Maybe<FormStepBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<FormStepBlockFacet>;
   items?: Maybe<Array<Maybe<FormStepBlock>>>;
@@ -21293,8 +25880,70 @@ export type FoundationPdfFile = IContent & {
   Thumbnail?: Maybe<BlobModel>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type FoundationPdfFileAutocomplete = {
+  __typename?: 'FoundationPdfFileAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  MimeType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Thumbnail?: Maybe<BlobModelAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type FoundationPdfFileAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FoundationPdfFileAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FoundationPdfFileAutocompleteMimeTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FoundationPdfFileAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FoundationPdfFileAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FoundationPdfFileAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type FoundationPdfFileAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type FoundationPdfFileFacet = {
@@ -21468,6 +26117,7 @@ export type FoundationPdfFileOrderByInput = {
 
 export type FoundationPdfFileOutput = {
   __typename?: 'FoundationPdfFileOutput';
+  autocomplete?: Maybe<FoundationPdfFileAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<FoundationPdfFileFacet>;
   items?: Maybe<Array<Maybe<FoundationPdfFile>>>;
@@ -21555,13 +26205,20 @@ export type GenericBundle = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
 };
 
 export type GenericBundleAssociations = {
   __typename?: 'GenericBundleAssociations';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type GenericBundleAssociationsAutocomplete = {
+  __typename?: 'GenericBundleAssociationsAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type GenericBundleAssociationsFacet = {
@@ -21577,9 +26234,79 @@ export type GenericBundleAssociationsWhereInput = {
   ContentLink?: InputMaybe<ContentModelReferenceWhereInput>;
 };
 
+export type GenericBundleAutocomplete = {
+  __typename?: 'GenericBundleAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Associations?: Maybe<GenericBundleAssociationsAutocomplete>;
+  BundleReference?: Maybe<ContentModelReferenceAutocomplete>;
+  Categories?: Maybe<GenericBundleCategoriesAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentEntries?: Maybe<GenericBundleRelationsAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ScriptFiles?: Maybe<LinkItemNodeAutocomplete>;
+  SeoInformation?: Maybe<GenericBundleSeoInformationAutocomplete>;
+  SeoUri?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type GenericBundleAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericBundleAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericBundleAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericBundleAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericBundleAutocompleteSeoUriArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericBundleAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericBundleAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
 export type GenericBundleCategories = {
   __typename?: 'GenericBundleCategories';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type GenericBundleCategoriesAutocomplete = {
+  __typename?: 'GenericBundleCategoriesAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type GenericBundleCategoriesFacet = {
@@ -21895,6 +26622,7 @@ export type GenericBundleOrderByInput = {
 
 export type GenericBundleOutput = {
   __typename?: 'GenericBundleOutput';
+  autocomplete?: Maybe<GenericBundleAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<GenericBundleFacet>;
   items?: Maybe<Array<Maybe<GenericBundle>>>;
@@ -21909,6 +26637,11 @@ export type GenericBundleOutputTotalArgs = {
 export type GenericBundleRelations = {
   __typename?: 'GenericBundleRelations';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type GenericBundleRelationsAutocomplete = {
+  __typename?: 'GenericBundleRelationsAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type GenericBundleRelationsFacet = {
@@ -21929,6 +26662,31 @@ export type GenericBundleSeoInformation = {
   Description?: Maybe<Scalars['String']>;
   Keywords?: Maybe<Scalars['String']>;
   Title?: Maybe<Scalars['String']>;
+};
+
+export type GenericBundleSeoInformationAutocomplete = {
+  __typename?: 'GenericBundleSeoInformationAutocomplete';
+  Description?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Keywords?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Title?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type GenericBundleSeoInformationAutocompleteDescriptionArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericBundleSeoInformationAutocompleteKeywordsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericBundleSeoInformationAutocompleteTitleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type GenericBundleSeoInformationFacet = {
@@ -22065,13 +26823,82 @@ export type GenericNode = IContent & {
   TopContentArea?: Maybe<Array<Maybe<ContentAreaItemModelSearch>>>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type GenericNodeAutocomplete = {
+  __typename?: 'GenericNodeAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<GenericNodeCategoriesAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ScriptFiles?: Maybe<LinkItemNodeAutocomplete>;
+  SeoInformation?: Maybe<GenericNodeSeoInformationAutocomplete>;
+  SeoUri?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type GenericNodeAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericNodeAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericNodeAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericNodeAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericNodeAutocompleteSeoUriArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericNodeAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericNodeAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type GenericNodeCategories = {
   __typename?: 'GenericNodeCategories';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type GenericNodeCategoriesAutocomplete = {
+  __typename?: 'GenericNodeCategoriesAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type GenericNodeCategoriesFacet = {
@@ -22380,6 +27207,7 @@ export type GenericNodeOrderByInput = {
 
 export type GenericNodeOutput = {
   __typename?: 'GenericNodeOutput';
+  autocomplete?: Maybe<GenericNodeAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<GenericNodeFacet>;
   items?: Maybe<Array<Maybe<GenericNode>>>;
@@ -22396,6 +27224,31 @@ export type GenericNodeSeoInformation = {
   Description?: Maybe<Scalars['String']>;
   Keywords?: Maybe<Scalars['String']>;
   Title?: Maybe<Scalars['String']>;
+};
+
+export type GenericNodeSeoInformationAutocomplete = {
+  __typename?: 'GenericNodeSeoInformationAutocomplete';
+  Description?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Keywords?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Title?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type GenericNodeSeoInformationAutocompleteDescriptionArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericNodeSeoInformationAutocompleteKeywordsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericNodeSeoInformationAutocompleteTitleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type GenericNodeSeoInformationFacet = {
@@ -22541,13 +27394,20 @@ export type GenericPackage = IContent & {
   Url?: Maybe<Scalars['String']>;
   Weight?: Maybe<Scalars['Float']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
 };
 
 export type GenericPackageAssociations = {
   __typename?: 'GenericPackageAssociations';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type GenericPackageAssociationsAutocomplete = {
+  __typename?: 'GenericPackageAssociationsAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type GenericPackageAssociationsFacet = {
@@ -22563,9 +27423,81 @@ export type GenericPackageAssociationsWhereInput = {
   ContentLink?: InputMaybe<ContentModelReferenceWhereInput>;
 };
 
+export type GenericPackageAutocomplete = {
+  __typename?: 'GenericPackageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Associations?: Maybe<GenericPackageAssociationsAutocomplete>;
+  Categories?: Maybe<GenericPackageCategoriesAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  InventoryReference?: Maybe<ContentModelReferenceAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  PackageReference?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentEntries?: Maybe<GenericPackageRelationsAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  PriceReference?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ScriptFiles?: Maybe<LinkItemNodeAutocomplete>;
+  SeoInformation?: Maybe<GenericPackageSeoInformationAutocomplete>;
+  SeoUri?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type GenericPackageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericPackageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericPackageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericPackageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericPackageAutocompleteSeoUriArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericPackageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericPackageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
 export type GenericPackageCategories = {
   __typename?: 'GenericPackageCategories';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type GenericPackageCategoriesAutocomplete = {
+  __typename?: 'GenericPackageCategoriesAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type GenericPackageCategoriesFacet = {
@@ -22918,6 +27850,7 @@ export type GenericPackageOrderByInput = {
 
 export type GenericPackageOutput = {
   __typename?: 'GenericPackageOutput';
+  autocomplete?: Maybe<GenericPackageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<GenericPackageFacet>;
   items?: Maybe<Array<Maybe<GenericPackage>>>;
@@ -22932,6 +27865,11 @@ export type GenericPackageOutputTotalArgs = {
 export type GenericPackageRelations = {
   __typename?: 'GenericPackageRelations';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type GenericPackageRelationsAutocomplete = {
+  __typename?: 'GenericPackageRelationsAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type GenericPackageRelationsFacet = {
@@ -22952,6 +27890,31 @@ export type GenericPackageSeoInformation = {
   Description?: Maybe<Scalars['String']>;
   Keywords?: Maybe<Scalars['String']>;
   Title?: Maybe<Scalars['String']>;
+};
+
+export type GenericPackageSeoInformationAutocomplete = {
+  __typename?: 'GenericPackageSeoInformationAutocomplete';
+  Description?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Keywords?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Title?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type GenericPackageSeoInformationAutocompleteDescriptionArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericPackageSeoInformationAutocompleteKeywordsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericPackageSeoInformationAutocompleteTitleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type GenericPackageSeoInformationFacet = {
@@ -23158,13 +28121,20 @@ export type GenericProduct = IContent & {
   VariantsReference?: Maybe<ContentModelReference>;
   Warranty?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
 };
 
 export type GenericProductAssociations = {
   __typename?: 'GenericProductAssociations';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type GenericProductAssociationsAutocomplete = {
+  __typename?: 'GenericProductAssociationsAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type GenericProductAssociationsFacet = {
@@ -23180,9 +28150,79 @@ export type GenericProductAssociationsWhereInput = {
   ContentLink?: InputMaybe<ContentModelReferenceWhereInput>;
 };
 
+export type GenericProductAutocomplete = {
+  __typename?: 'GenericProductAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Associations?: Maybe<GenericProductAssociationsAutocomplete>;
+  Categories?: Maybe<GenericProductCategoriesAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentEntries?: Maybe<GenericProductRelationsAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ScriptFiles?: Maybe<LinkItemNodeAutocomplete>;
+  SeoInformation?: Maybe<GenericProductSeoInformationAutocomplete>;
+  SeoUri?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+  VariantsReference?: Maybe<ContentModelReferenceAutocomplete>;
+};
+
+
+export type GenericProductAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericProductAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericProductAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericProductAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericProductAutocompleteSeoUriArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericProductAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericProductAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
 export type GenericProductCategories = {
   __typename?: 'GenericProductCategories';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type GenericProductCategoriesAutocomplete = {
+  __typename?: 'GenericProductCategoriesAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type GenericProductCategoriesFacet = {
@@ -23655,6 +28695,7 @@ export type GenericProductOrderByInput = {
 
 export type GenericProductOutput = {
   __typename?: 'GenericProductOutput';
+  autocomplete?: Maybe<GenericProductAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<GenericProductFacet>;
   items?: Maybe<Array<Maybe<GenericProduct>>>;
@@ -23669,6 +28710,11 @@ export type GenericProductOutputTotalArgs = {
 export type GenericProductRelations = {
   __typename?: 'GenericProductRelations';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type GenericProductRelationsAutocomplete = {
+  __typename?: 'GenericProductRelationsAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type GenericProductRelationsFacet = {
@@ -23689,6 +28735,31 @@ export type GenericProductSeoInformation = {
   Description?: Maybe<Scalars['String']>;
   Keywords?: Maybe<Scalars['String']>;
   Title?: Maybe<Scalars['String']>;
+};
+
+export type GenericProductSeoInformationAutocomplete = {
+  __typename?: 'GenericProductSeoInformationAutocomplete';
+  Description?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Keywords?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Title?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type GenericProductSeoInformationAutocompleteDescriptionArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericProductSeoInformationAutocompleteKeywordsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericProductSeoInformationAutocompleteTitleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type GenericProductSeoInformationFacet = {
@@ -23858,13 +28929,20 @@ export type GenericVariant = IContent & {
   VirtualProductRole?: Maybe<Scalars['String']>;
   Weight?: Maybe<Scalars['Float']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
 };
 
 export type GenericVariantAssociations = {
   __typename?: 'GenericVariantAssociations';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type GenericVariantAssociationsAutocomplete = {
+  __typename?: 'GenericVariantAssociationsAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type GenericVariantAssociationsFacet = {
@@ -23880,9 +28958,80 @@ export type GenericVariantAssociationsWhereInput = {
   ContentLink?: InputMaybe<ContentModelReferenceWhereInput>;
 };
 
+export type GenericVariantAutocomplete = {
+  __typename?: 'GenericVariantAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Associations?: Maybe<GenericVariantAssociationsAutocomplete>;
+  Categories?: Maybe<GenericVariantCategoriesAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  InventoryReference?: Maybe<ContentModelReferenceAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentEntries?: Maybe<GenericVariantRelationsAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  PriceReference?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ScriptFiles?: Maybe<LinkItemNodeAutocomplete>;
+  SeoInformation?: Maybe<GenericVariantSeoInformationAutocomplete>;
+  SeoUri?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type GenericVariantAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericVariantAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericVariantAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericVariantAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericVariantAutocompleteSeoUriArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericVariantAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericVariantAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
 export type GenericVariantCategories = {
   __typename?: 'GenericVariantCategories';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type GenericVariantCategoriesAutocomplete = {
+  __typename?: 'GenericVariantCategoriesAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type GenericVariantCategoriesFacet = {
@@ -24313,6 +29462,7 @@ export type GenericVariantOrderByInput = {
 
 export type GenericVariantOutput = {
   __typename?: 'GenericVariantOutput';
+  autocomplete?: Maybe<GenericVariantAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<GenericVariantFacet>;
   items?: Maybe<Array<Maybe<GenericVariant>>>;
@@ -24327,6 +29477,11 @@ export type GenericVariantOutputTotalArgs = {
 export type GenericVariantRelations = {
   __typename?: 'GenericVariantRelations';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type GenericVariantRelationsAutocomplete = {
+  __typename?: 'GenericVariantRelationsAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type GenericVariantRelationsFacet = {
@@ -24347,6 +29502,31 @@ export type GenericVariantSeoInformation = {
   Description?: Maybe<Scalars['String']>;
   Keywords?: Maybe<Scalars['String']>;
   Title?: Maybe<Scalars['String']>;
+};
+
+export type GenericVariantSeoInformationAutocomplete = {
+  __typename?: 'GenericVariantSeoInformationAutocomplete';
+  Description?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Keywords?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Title?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type GenericVariantSeoInformationAutocompleteDescriptionArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericVariantSeoInformationAutocompleteKeywordsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GenericVariantSeoInformationAutocompleteTitleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type GenericVariantSeoInformationFacet = {
@@ -24549,8 +29729,115 @@ export type GiftCardPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type GiftCardPageAutocomplete = {
+  __typename?: 'GiftCardPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type GiftCardPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GiftCardPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GiftCardPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GiftCardPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GiftCardPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GiftCardPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GiftCardPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GiftCardPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GiftCardPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GiftCardPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GiftCardPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GiftCardPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GiftCardPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type GiftCardPageFacet = {
@@ -24935,6 +30222,7 @@ export type GiftCardPageOrderByInput = {
 
 export type GiftCardPageOutput = {
   __typename?: 'GiftCardPageOutput';
+  autocomplete?: Maybe<GiftCardPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<GiftCardPageFacet>;
   items?: Maybe<Array<Maybe<GiftCardPage>>>;
@@ -25033,8 +30321,63 @@ export type GoogleMapsBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type GoogleMapsBlockAutocomplete = {
+  __typename?: 'GoogleMapsBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type GoogleMapsBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GoogleMapsBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GoogleMapsBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GoogleMapsBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GoogleMapsBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GoogleMapsBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type GoogleMapsBlockFacet = {
@@ -25245,6 +30588,7 @@ export type GoogleMapsBlockOrderByInput = {
 
 export type GoogleMapsBlockOutput = {
   __typename?: 'GoogleMapsBlockOutput';
+  autocomplete?: Maybe<GoogleMapsBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<GoogleMapsBlockFacet>;
   items?: Maybe<Array<Maybe<GoogleMapsBlock>>>;
@@ -25317,8 +30661,62 @@ export type GroupAdmissionBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type GroupAdmissionBlockAutocomplete = {
+  __typename?: 'GroupAdmissionBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type GroupAdmissionBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GroupAdmissionBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GroupAdmissionBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GroupAdmissionBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GroupAdmissionBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GroupAdmissionBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type GroupAdmissionBlockFacet = {
@@ -25493,6 +30891,7 @@ export type GroupAdmissionBlockOrderByInput = {
 
 export type GroupAdmissionBlockOutput = {
   __typename?: 'GroupAdmissionBlockOutput';
+  autocomplete?: Maybe<GroupAdmissionBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<GroupAdmissionBlockFacet>;
   items?: Maybe<Array<Maybe<GroupAdmissionBlock>>>;
@@ -25559,8 +30958,62 @@ export type GroupCreationBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type GroupCreationBlockAutocomplete = {
+  __typename?: 'GroupCreationBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type GroupCreationBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GroupCreationBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GroupCreationBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GroupCreationBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GroupCreationBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type GroupCreationBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type GroupCreationBlockFacet = {
@@ -25725,6 +31178,7 @@ export type GroupCreationBlockOrderByInput = {
 
 export type GroupCreationBlockOutput = {
   __typename?: 'GroupCreationBlockOutput';
+  autocomplete?: Maybe<GroupCreationBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<GroupCreationBlockFacet>;
   items?: Maybe<Array<Maybe<GroupCreationBlock>>>;
@@ -25765,6 +31219,312 @@ export type GroupCreationBlockWhereInput = {
   _or?: InputMaybe<Array<InputMaybe<GroupCreationBlockWhereInput>>>;
 };
 
+export type HcaptchaElementBlock = IContent & {
+  __typename?: 'HcaptchaElementBlock';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<Array<Maybe<CategoryModel>>>;
+  Changed?: Maybe<Scalars['Date']>;
+  ContentLink?: Maybe<ContentModelReference>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Created?: Maybe<Scalars['Date']>;
+  ExistingLanguages?: Maybe<Array<Maybe<ContentLanguageModel>>>;
+  IsCommonDraft?: Maybe<Scalars['Bool']>;
+  Language?: Maybe<ContentLanguageModel>;
+  MasterLanguage?: Maybe<ContentLanguageModel>;
+  Name?: Maybe<Scalars['String']>;
+  ParentLink?: Maybe<ContentModelReference>;
+  RelativePath?: Maybe<Scalars['String']>;
+  RouteSegment?: Maybe<Scalars['String']>;
+  Saved?: Maybe<Scalars['Date']>;
+  ScoreThreshold?: Maybe<Scalars['Float']>;
+  SecretKey?: Maybe<Scalars['String']>;
+  SiteKey?: Maybe<Scalars['String']>;
+  StartPublish?: Maybe<Scalars['Date']>;
+  Status?: Maybe<Scalars['String']>;
+  StopPublish?: Maybe<Scalars['Date']>;
+  Url?: Maybe<Scalars['String']>;
+  Validators?: Maybe<Scalars['String']>;
+  _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
+  _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
+  _score?: Maybe<Scalars['Float']>;
+};
+
+export type HcaptchaElementBlockAutocomplete = {
+  __typename?: 'HcaptchaElementBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type HcaptchaElementBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HcaptchaElementBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HcaptchaElementBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HcaptchaElementBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HcaptchaElementBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HcaptchaElementBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+export type HcaptchaElementBlockFacet = {
+  __typename?: 'HcaptchaElementBlockFacet';
+  Ancestors?: Maybe<Array<Maybe<StringFacet>>>;
+  Category?: Maybe<CategoryModelFacet>;
+  Changed?: Maybe<Array<Maybe<DateFacet>>>;
+  ContentLink?: Maybe<ContentModelReferenceFacet>;
+  ContentType?: Maybe<Array<Maybe<StringFacet>>>;
+  Created?: Maybe<Array<Maybe<DateFacet>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelFacet>;
+  IsCommonDraft?: Maybe<Array<Maybe<StringFacet>>>;
+  Language?: Maybe<ContentLanguageModelFacet>;
+  MasterLanguage?: Maybe<ContentLanguageModelFacet>;
+  Name?: Maybe<Array<Maybe<StringFacet>>>;
+  ParentLink?: Maybe<ContentModelReferenceFacet>;
+  RelativePath?: Maybe<Array<Maybe<StringFacet>>>;
+  RouteSegment?: Maybe<Array<Maybe<StringFacet>>>;
+  Saved?: Maybe<Array<Maybe<DateFacet>>>;
+  ScoreThreshold?: Maybe<Array<Maybe<NumberFacet>>>;
+  SecretKey?: Maybe<Array<Maybe<StringFacet>>>;
+  SiteKey?: Maybe<Array<Maybe<StringFacet>>>;
+  StartPublish?: Maybe<Array<Maybe<DateFacet>>>;
+  Status?: Maybe<Array<Maybe<StringFacet>>>;
+  StopPublish?: Maybe<Array<Maybe<DateFacet>>>;
+  Url?: Maybe<Array<Maybe<StringFacet>>>;
+  Validators?: Maybe<Array<Maybe<StringFacet>>>;
+};
+
+
+export type HcaptchaElementBlockFacetAncestorsArgs = {
+  filters?: InputMaybe<Array<Scalars['String']>>;
+  limit?: Scalars['Int'];
+  orderBy?: InputMaybe<OrderBy>;
+  orderType?: InputMaybe<OrderByFacetType>;
+};
+
+
+export type HcaptchaElementBlockFacetChangedArgs = {
+  unit?: InputMaybe<DateFacetUnit>;
+  value?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type HcaptchaElementBlockFacetContentTypeArgs = {
+  filters?: InputMaybe<Array<Scalars['String']>>;
+  limit?: Scalars['Int'];
+  orderBy?: InputMaybe<OrderBy>;
+  orderType?: InputMaybe<OrderByFacetType>;
+};
+
+
+export type HcaptchaElementBlockFacetCreatedArgs = {
+  unit?: InputMaybe<DateFacetUnit>;
+  value?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type HcaptchaElementBlockFacetIsCommonDraftArgs = {
+  filters?: InputMaybe<Array<Scalars['String']>>;
+  limit?: Scalars['Int'];
+  orderBy?: InputMaybe<OrderBy>;
+  orderType?: InputMaybe<OrderByFacetType>;
+};
+
+
+export type HcaptchaElementBlockFacetNameArgs = {
+  filters?: InputMaybe<Array<Scalars['String']>>;
+  limit?: Scalars['Int'];
+  orderBy?: InputMaybe<OrderBy>;
+  orderType?: InputMaybe<OrderByFacetType>;
+};
+
+
+export type HcaptchaElementBlockFacetRelativePathArgs = {
+  filters?: InputMaybe<Array<Scalars['String']>>;
+  limit?: Scalars['Int'];
+  orderBy?: InputMaybe<OrderBy>;
+  orderType?: InputMaybe<OrderByFacetType>;
+};
+
+
+export type HcaptchaElementBlockFacetRouteSegmentArgs = {
+  filters?: InputMaybe<Array<Scalars['String']>>;
+  limit?: Scalars['Int'];
+  orderBy?: InputMaybe<OrderBy>;
+  orderType?: InputMaybe<OrderByFacetType>;
+};
+
+
+export type HcaptchaElementBlockFacetSavedArgs = {
+  unit?: InputMaybe<DateFacetUnit>;
+  value?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type HcaptchaElementBlockFacetScoreThresholdArgs = {
+  ranges?: InputMaybe<Array<InputMaybe<RangeFacetsInput>>>;
+};
+
+
+export type HcaptchaElementBlockFacetSecretKeyArgs = {
+  filters?: InputMaybe<Array<Scalars['String']>>;
+  limit?: Scalars['Int'];
+  orderBy?: InputMaybe<OrderBy>;
+  orderType?: InputMaybe<OrderByFacetType>;
+};
+
+
+export type HcaptchaElementBlockFacetSiteKeyArgs = {
+  filters?: InputMaybe<Array<Scalars['String']>>;
+  limit?: Scalars['Int'];
+  orderBy?: InputMaybe<OrderBy>;
+  orderType?: InputMaybe<OrderByFacetType>;
+};
+
+
+export type HcaptchaElementBlockFacetStartPublishArgs = {
+  unit?: InputMaybe<DateFacetUnit>;
+  value?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type HcaptchaElementBlockFacetStatusArgs = {
+  filters?: InputMaybe<Array<Scalars['String']>>;
+  limit?: Scalars['Int'];
+  orderBy?: InputMaybe<OrderBy>;
+  orderType?: InputMaybe<OrderByFacetType>;
+};
+
+
+export type HcaptchaElementBlockFacetStopPublishArgs = {
+  unit?: InputMaybe<DateFacetUnit>;
+  value?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type HcaptchaElementBlockFacetUrlArgs = {
+  filters?: InputMaybe<Array<Scalars['String']>>;
+  limit?: Scalars['Int'];
+  orderBy?: InputMaybe<OrderBy>;
+  orderType?: InputMaybe<OrderByFacetType>;
+};
+
+
+export type HcaptchaElementBlockFacetValidatorsArgs = {
+  filters?: InputMaybe<Array<Scalars['String']>>;
+  limit?: Scalars['Int'];
+  orderBy?: InputMaybe<OrderBy>;
+  orderType?: InputMaybe<OrderByFacetType>;
+};
+
+export type HcaptchaElementBlockOrderByInput = {
+  Ancestors?: InputMaybe<OrderBy>;
+  Category?: InputMaybe<CategoryModelOrderByInput>;
+  Changed?: InputMaybe<OrderBy>;
+  ContentLink?: InputMaybe<ContentModelReferenceOrderByInput>;
+  ContentType?: InputMaybe<OrderBy>;
+  Created?: InputMaybe<OrderBy>;
+  ExistingLanguages?: InputMaybe<ContentLanguageModelOrderByInput>;
+  IsCommonDraft?: InputMaybe<OrderBy>;
+  Language?: InputMaybe<ContentLanguageModelOrderByInput>;
+  MasterLanguage?: InputMaybe<ContentLanguageModelOrderByInput>;
+  Name?: InputMaybe<OrderBy>;
+  ParentLink?: InputMaybe<ContentModelReferenceOrderByInput>;
+  RelativePath?: InputMaybe<OrderBy>;
+  RouteSegment?: InputMaybe<OrderBy>;
+  Saved?: InputMaybe<OrderBy>;
+  ScoreThreshold?: InputMaybe<OrderBy>;
+  SecretKey?: InputMaybe<OrderBy>;
+  SiteKey?: InputMaybe<OrderBy>;
+  StartPublish?: InputMaybe<OrderBy>;
+  Status?: InputMaybe<OrderBy>;
+  StopPublish?: InputMaybe<OrderBy>;
+  Url?: InputMaybe<OrderBy>;
+  Validators?: InputMaybe<OrderBy>;
+  _ranking?: InputMaybe<Ranking>;
+};
+
+export type HcaptchaElementBlockOutput = {
+  __typename?: 'HcaptchaElementBlockOutput';
+  autocomplete?: Maybe<HcaptchaElementBlockAutocomplete>;
+  cursor?: Maybe<Scalars['String']>;
+  facets?: Maybe<HcaptchaElementBlockFacet>;
+  items?: Maybe<Array<Maybe<HcaptchaElementBlock>>>;
+  total?: Maybe<Scalars['Int']>;
+};
+
+
+export type HcaptchaElementBlockOutputTotalArgs = {
+  all?: InputMaybe<Scalars['Boolean']>;
+};
+
+export type HcaptchaElementBlockWhereInput = {
+  Ancestors?: InputMaybe<StringFilterInput>;
+  Category?: InputMaybe<CategoryModelWhereInput>;
+  Changed?: InputMaybe<DateFilterInput>;
+  ContentLink?: InputMaybe<ContentModelReferenceWhereInput>;
+  ContentType?: InputMaybe<StringFilterInput>;
+  Created?: InputMaybe<DateFilterInput>;
+  ExistingLanguages?: InputMaybe<ContentLanguageModelWhereInput>;
+  IsCommonDraft?: InputMaybe<BoolFilterInput>;
+  Language?: InputMaybe<ContentLanguageModelWhereInput>;
+  MasterLanguage?: InputMaybe<ContentLanguageModelWhereInput>;
+  Name?: InputMaybe<SearchableStringFilterInput>;
+  ParentLink?: InputMaybe<ContentModelReferenceWhereInput>;
+  RelativePath?: InputMaybe<StringFilterInput>;
+  RouteSegment?: InputMaybe<StringFilterInput>;
+  Saved?: InputMaybe<DateFilterInput>;
+  ScoreThreshold?: InputMaybe<FloatFilterInput>;
+  SecretKey?: InputMaybe<SearchableStringFilterInput>;
+  SiteKey?: InputMaybe<SearchableStringFilterInput>;
+  StartPublish?: InputMaybe<DateFilterInput>;
+  Status?: InputMaybe<StringFilterInput>;
+  StopPublish?: InputMaybe<DateFilterInput>;
+  Url?: InputMaybe<StringFilterInput>;
+  Validators?: InputMaybe<SearchableStringFilterInput>;
+  _and?: InputMaybe<Array<InputMaybe<HcaptchaElementBlockWhereInput>>>;
+  _fulltext?: InputMaybe<SearchableStringFilterInput>;
+  _modified?: InputMaybe<DateFilterInput>;
+  _not?: InputMaybe<Array<InputMaybe<HcaptchaElementBlockWhereInput>>>;
+  _or?: InputMaybe<Array<InputMaybe<HcaptchaElementBlockWhereInput>>>;
+};
+
 /** Used to insert a health chat bot */
 export type HealthChatbotBlock = IContent & {
   __typename?: 'HealthChatbotBlock';
@@ -25800,8 +31560,63 @@ export type HealthChatbotBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type HealthChatbotBlockAutocomplete = {
+  __typename?: 'HealthChatbotBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type HealthChatbotBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HealthChatbotBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HealthChatbotBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HealthChatbotBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HealthChatbotBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HealthChatbotBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type HealthChatbotBlockFacet = {
@@ -26012,6 +31827,7 @@ export type HealthChatbotBlockOrderByInput = {
 
 export type HealthChatbotBlockOutput = {
   __typename?: 'HealthChatbotBlockOutput';
+  autocomplete?: Maybe<HealthChatbotBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<HealthChatbotBlockFacet>;
   items?: Maybe<Array<Maybe<HealthChatbotBlock>>>;
@@ -26092,8 +31908,73 @@ export type HeroBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type HeroBlockAutocomplete = {
+  __typename?: 'HeroBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  BackgroundImage?: Maybe<ContentModelReferenceAutocomplete>;
+  Callout?: Maybe<HeroBlockHeroBlockCalloutAutocomplete>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Link?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MainBackgroundVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type HeroBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HeroBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HeroBlockAutocompleteLinkArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HeroBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HeroBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HeroBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HeroBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type HeroBlockCallout = IContent & {
@@ -26128,8 +32009,62 @@ export type HeroBlockCallout = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type HeroBlockCalloutAutocomplete = {
+  __typename?: 'HeroBlockCalloutAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type HeroBlockCalloutAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HeroBlockCalloutAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HeroBlockCalloutAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HeroBlockCalloutAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HeroBlockCalloutAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HeroBlockCalloutAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type HeroBlockCalloutFacet = {
@@ -26361,6 +32296,7 @@ export type HeroBlockCalloutOrderByInput = {
 
 export type HeroBlockCalloutOutput = {
   __typename?: 'HeroBlockCalloutOutput';
+  autocomplete?: Maybe<HeroBlockCalloutAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<HeroBlockCalloutFacet>;
   items?: Maybe<Array<Maybe<HeroBlockCallout>>>;
@@ -26593,6 +32529,59 @@ export type HeroBlockHeroBlockCallout = {
   Padding?: Maybe<Scalars['String']>;
 };
 
+export type HeroBlockHeroBlockCalloutAutocomplete = {
+  __typename?: 'HeroBlockHeroBlockCalloutAutocomplete';
+  BackgroundColor?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CalloutContent?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CalloutContentAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CalloutPosition?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CalloutTextColor?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type HeroBlockHeroBlockCalloutAutocompleteBackgroundColorArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HeroBlockHeroBlockCalloutAutocompleteCalloutContentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HeroBlockHeroBlockCalloutAutocompleteCalloutContentAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HeroBlockHeroBlockCalloutAutocompleteCalloutPositionArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HeroBlockHeroBlockCalloutAutocompleteCalloutTextColorArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HeroBlockHeroBlockCalloutAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HeroBlockHeroBlockCalloutAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
 export type HeroBlockHeroBlockCalloutFacet = {
   __typename?: 'HeroBlockHeroBlockCalloutFacet';
   BackgroundColor?: Maybe<Array<Maybe<StringFacet>>>;
@@ -26734,6 +32723,7 @@ export type HeroBlockOrderByInput = {
 
 export type HeroBlockOutput = {
   __typename?: 'HeroBlockOutput';
+  autocomplete?: Maybe<HeroBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<HeroBlockFacet>;
   items?: Maybe<Array<Maybe<HeroBlock>>>;
@@ -26837,8 +32827,115 @@ export type HomePage = IContent & {
   TopContentArea?: Maybe<Array<Maybe<ContentAreaItemModelSearch>>>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type HomePageAutocomplete = {
+  __typename?: 'HomePageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type HomePageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HomePageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HomePageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HomePageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HomePageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HomePageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HomePageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HomePageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HomePageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HomePageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HomePageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HomePageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HomePageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type HomePageFacet = {
@@ -27227,6 +33324,7 @@ export type HomePageOrderByInput = {
 
 export type HomePageOutput = {
   __typename?: 'HomePageOutput';
+  autocomplete?: Maybe<HomePageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<HomePageFacet>;
   items?: Maybe<Array<Maybe<HomePage>>>;
@@ -27302,6 +33400,25 @@ export type HostDefinitionModel = {
   Type?: Maybe<Scalars['String']>;
 };
 
+export type HostDefinitionModelAutocomplete = {
+  __typename?: 'HostDefinitionModelAutocomplete';
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Name?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Type?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type HostDefinitionModelAutocompleteNameArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HostDefinitionModelAutocompleteTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
 export type HostDefinitionModelFacet = {
   __typename?: 'HostDefinitionModelFacet';
   Language?: Maybe<ContentLanguageModelFacet>;
@@ -27361,8 +33478,62 @@ export type HtmlBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type HtmlBlockAutocomplete = {
+  __typename?: 'HtmlBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type HtmlBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HtmlBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HtmlBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HtmlBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HtmlBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type HtmlBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type HtmlBlockFacet = {
@@ -27517,6 +33688,7 @@ export type HtmlBlockOrderByInput = {
 
 export type HtmlBlockOutput = {
   __typename?: 'HtmlBlockOutput';
+  autocomplete?: Maybe<HtmlBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<HtmlBlockFacet>;
   items?: Maybe<Array<Maybe<HtmlBlock>>>;
@@ -27576,7 +33748,9 @@ export type IContent = {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
 };
 
@@ -27609,8 +33783,63 @@ export type IframeBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type IframeBlockAutocomplete = {
+  __typename?: 'IframeBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type IframeBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type IframeBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type IframeBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type IframeBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type IframeBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type IframeBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type IframeBlockFacet = {
@@ -27804,6 +34033,7 @@ export type IframeBlockOrderByInput = {
 
 export type IframeBlockOutput = {
   __typename?: 'IframeBlockOutput';
+  autocomplete?: Maybe<IframeBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<IframeBlockFacet>;
   items?: Maybe<Array<Maybe<IframeBlock>>>;
@@ -27878,8 +34108,63 @@ export type ImageChoiceElementBlock = IContent & {
   Url?: Maybe<Scalars['String']>;
   Validators?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type ImageChoiceElementBlockAutocomplete = {
+  __typename?: 'ImageChoiceElementBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Items?: Maybe<LinkItemNodeAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type ImageChoiceElementBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ImageChoiceElementBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ImageChoiceElementBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ImageChoiceElementBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ImageChoiceElementBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ImageChoiceElementBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type ImageChoiceElementBlockFacet = {
@@ -28093,6 +34378,7 @@ export type ImageChoiceElementBlockOrderByInput = {
 
 export type ImageChoiceElementBlockOutput = {
   __typename?: 'ImageChoiceElementBlockOutput';
+  autocomplete?: Maybe<ImageChoiceElementBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<ImageChoiceElementBlockFacet>;
   items?: Maybe<Array<Maybe<ImageChoiceElementBlock>>>;
@@ -28193,8 +34479,100 @@ export type ImageMediaData = IContent & {
   Title?: Maybe<Scalars['String']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type ImageMediaDataAutocomplete = {
+  __typename?: 'ImageMediaDataAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CreditsLink?: Maybe<Array<Maybe<Scalars['String']>>>;
+  DominantColors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  ImageCategories?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  LargeThumbnail?: Maybe<BlobModelAutocomplete>;
+  Link?: Maybe<ContentModelReferenceAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  MimeType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Tags?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Thumbnail?: Maybe<BlobModelAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type ImageMediaDataAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ImageMediaDataAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ImageMediaDataAutocompleteCreditsLinkArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ImageMediaDataAutocompleteDominantColorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ImageMediaDataAutocompleteImageCategoriesArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ImageMediaDataAutocompleteMimeTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ImageMediaDataAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ImageMediaDataAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ImageMediaDataAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ImageMediaDataAutocompleteTagsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ImageMediaDataAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type ImageMediaDataFacet = {
@@ -28593,6 +34971,7 @@ export type ImageMediaDataOrderByInput = {
 
 export type ImageMediaDataOutput = {
   __typename?: 'ImageMediaDataOutput';
+  autocomplete?: Maybe<ImageMediaDataAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<ImageMediaDataFacet>;
   items?: Maybe<Array<Maybe<ImageMediaData>>>;
@@ -28660,6 +35039,69 @@ export type ImageMediaDataWhereInput = {
   _or?: InputMaybe<Array<InputMaybe<ImageMediaDataWhereInput>>>;
 };
 
+export type InlineBlockPropertyModel = {
+  __typename?: 'InlineBlockPropertyModel';
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+export type InlineBlockPropertyModelAutocomplete = {
+  __typename?: 'InlineBlockPropertyModelAutocomplete';
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type InlineBlockPropertyModelAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+export type InlineBlockPropertyModelFacet = {
+  __typename?: 'InlineBlockPropertyModelFacet';
+  ContentType?: Maybe<Array<Maybe<StringFacet>>>;
+};
+
+
+export type InlineBlockPropertyModelFacetContentTypeArgs = {
+  filters?: InputMaybe<Array<Scalars['String']>>;
+  limit?: Scalars['Int'];
+  orderBy?: InputMaybe<OrderBy>;
+  orderType?: InputMaybe<OrderByFacetType>;
+};
+
+export type InlineBlockPropertyModelOrderByInput = {
+  ContentType?: InputMaybe<OrderBy>;
+};
+
+export type InlineBlockPropertyModelSearch = {
+  __typename?: 'InlineBlockPropertyModelSearch';
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+export type InlineBlockPropertyModelSearchFacet = {
+  __typename?: 'InlineBlockPropertyModelSearchFacet';
+  ContentType?: Maybe<Array<Maybe<StringFacet>>>;
+};
+
+
+export type InlineBlockPropertyModelSearchFacetContentTypeArgs = {
+  filters?: InputMaybe<Array<Scalars['String']>>;
+  limit?: Scalars['Int'];
+  orderBy?: InputMaybe<OrderBy>;
+  orderType?: InputMaybe<OrderByFacetType>;
+};
+
+export type InlineBlockPropertyModelSearchOrderByInput = {
+  ContentType?: InputMaybe<OrderBy>;
+};
+
+export type InlineBlockPropertyModelSearchWhereInput = {
+  ContentType?: InputMaybe<SearchableStringFilterInput>;
+};
+
+export type InlineBlockPropertyModelWhereInput = {
+  ContentType?: InputMaybe<StringFilterInput>;
+};
+
 export type IntFilterInput = {
   /** `boost` influences the weight of a field by boosting a match with a number (default: 1) — counts more towards the eventual relevance score which can be projected with `_score` — at query time. Note that `boost` cannot be a negative number. */
   boost?: InputMaybe<Scalars['Int']>;
@@ -28715,8 +35157,63 @@ export type JourneyContainerBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type JourneyContainerBlockAutocomplete = {
+  __typename?: 'JourneyContainerBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type JourneyContainerBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type JourneyContainerBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type JourneyContainerBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type JourneyContainerBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type JourneyContainerBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type JourneyContainerBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type JourneyContainerBlockFacet = {
@@ -28920,6 +35417,7 @@ export type JourneyContainerBlockOrderByInput = {
 
 export type JourneyContainerBlockOutput = {
   __typename?: 'JourneyContainerBlockOutput';
+  autocomplete?: Maybe<JourneyContainerBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<JourneyContainerBlockFacet>;
   items?: Maybe<Array<Maybe<JourneyContainerBlock>>>;
@@ -29020,8 +35518,115 @@ export type LandingPage = IContent & {
   TopContentArea?: Maybe<Array<Maybe<ContentAreaItemModelSearch>>>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type LandingPageAutocomplete = {
+  __typename?: 'LandingPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type LandingPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LandingPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LandingPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LandingPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LandingPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LandingPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LandingPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LandingPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LandingPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LandingPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LandingPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LandingPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LandingPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type LandingPageFacet = {
@@ -29408,6 +36013,7 @@ export type LandingPageOrderByInput = {
 
 export type LandingPageOutput = {
   __typename?: 'LandingPageOutput';
+  autocomplete?: Maybe<LandingPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<LandingPageFacet>;
   items?: Maybe<Array<Maybe<LandingPage>>>;
@@ -29504,8 +36110,63 @@ export type LikeButtonBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type LikeButtonBlockAutocomplete = {
+  __typename?: 'LikeButtonBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type LikeButtonBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LikeButtonBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LikeButtonBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LikeButtonBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LikeButtonBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LikeButtonBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type LikeButtonBlockFacet = {
@@ -29689,6 +36350,7 @@ export type LikeButtonBlockOrderByInput = {
 
 export type LikeButtonBlockOutput = {
   __typename?: 'LikeButtonBlockOutput';
+  autocomplete?: Maybe<LikeButtonBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<LikeButtonBlockFacet>;
   items?: Maybe<Array<Maybe<LikeButtonBlock>>>;
@@ -29739,6 +36401,39 @@ export type LinkItemNode = {
   Target?: Maybe<Scalars['String']>;
   Text?: Maybe<Scalars['String']>;
   Title?: Maybe<Scalars['String']>;
+};
+
+export type LinkItemNodeAutocomplete = {
+  __typename?: 'LinkItemNodeAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  Href?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Target?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Text?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Title?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type LinkItemNodeAutocompleteHrefArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LinkItemNodeAutocompleteTargetArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LinkItemNodeAutocompleteTextArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LinkItemNodeAutocompleteTitleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type LinkItemNodeFacet = {
@@ -29799,6 +36494,8 @@ export type LinkItemNodeWhereInput = {
 };
 
 export enum Locales {
+  All = 'ALL',
+  Neutral = 'NEUTRAL',
   En = 'en'
 }
 
@@ -29868,8 +36565,116 @@ export type LocationItemPage = IContent & {
   Url?: Maybe<Scalars['String']>;
   YearlyPassengers?: Maybe<Scalars['Int']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type LocationItemPageAutocomplete = {
+  __typename?: 'LocationItemPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Image?: Maybe<ContentModelReferenceAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type LocationItemPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LocationItemPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LocationItemPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LocationItemPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LocationItemPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LocationItemPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LocationItemPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LocationItemPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LocationItemPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LocationItemPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LocationItemPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LocationItemPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LocationItemPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type LocationItemPageFacet = {
@@ -30346,6 +37151,7 @@ export type LocationItemPageOrderByInput = {
 
 export type LocationItemPageOutput = {
   __typename?: 'LocationItemPageOutput';
+  autocomplete?: Maybe<LocationItemPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<LocationItemPageFacet>;
   items?: Maybe<Array<Maybe<LocationItemPage>>>;
@@ -30478,8 +37284,115 @@ export type LocationListPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type LocationListPageAutocomplete = {
+  __typename?: 'LocationListPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type LocationListPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LocationListPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LocationListPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LocationListPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LocationListPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LocationListPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LocationListPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LocationListPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LocationListPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LocationListPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LocationListPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LocationListPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type LocationListPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type LocationListPageFacet = {
@@ -30866,6 +37779,7 @@ export type LocationListPageOrderByInput = {
 
 export type LocationListPageOutput = {
   __typename?: 'LocationListPageOutput';
+  autocomplete?: Maybe<LocationListPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<LocationListPageFacet>;
   items?: Maybe<Array<Maybe<LocationListPage>>>;
@@ -30965,8 +37879,63 @@ export type MembershipAffiliationBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type MembershipAffiliationBlockAutocomplete = {
+  __typename?: 'MembershipAffiliationBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type MembershipAffiliationBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type MembershipAffiliationBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type MembershipAffiliationBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type MembershipAffiliationBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type MembershipAffiliationBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type MembershipAffiliationBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type MembershipAffiliationBlockFacet = {
@@ -31177,6 +38146,7 @@ export type MembershipAffiliationBlockOrderByInput = {
 
 export type MembershipAffiliationBlockOutput = {
   __typename?: 'MembershipAffiliationBlockOutput';
+  autocomplete?: Maybe<MembershipAffiliationBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<MembershipAffiliationBlockFacet>;
   items?: Maybe<Array<Maybe<MembershipAffiliationBlock>>>;
@@ -31256,8 +38226,63 @@ export type MembershipDisplayBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type MembershipDisplayBlockAutocomplete = {
+  __typename?: 'MembershipDisplayBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type MembershipDisplayBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type MembershipDisplayBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type MembershipDisplayBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type MembershipDisplayBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type MembershipDisplayBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type MembershipDisplayBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type MembershipDisplayBlockFacet = {
@@ -31478,6 +38503,7 @@ export type MembershipDisplayBlockOrderByInput = {
 
 export type MembershipDisplayBlockOutput = {
   __typename?: 'MembershipDisplayBlockOutput';
+  autocomplete?: Maybe<MembershipDisplayBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<MembershipDisplayBlockFacet>;
   items?: Maybe<Array<Maybe<MembershipDisplayBlock>>>;
@@ -31555,8 +38581,77 @@ export type MenuItemBlock = IContent & {
   TeaserText?: Maybe<Scalars['String']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type MenuItemBlockAutocomplete = {
+  __typename?: 'MenuItemBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ButtonLink?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Link?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  MenuImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type MenuItemBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type MenuItemBlockAutocompleteButtonLinkArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type MenuItemBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type MenuItemBlockAutocompleteLinkArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type MenuItemBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type MenuItemBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type MenuItemBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type MenuItemBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type MenuItemBlockFacet = {
@@ -31743,6 +38838,7 @@ export type MenuItemBlockOrderByInput = {
 
 export type MenuItemBlockOutput = {
   __typename?: 'MenuItemBlockOutput';
+  autocomplete?: Maybe<MenuItemBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<MenuItemBlockFacet>;
   items?: Maybe<Array<Maybe<MenuItemBlock>>>;
@@ -31842,8 +38938,71 @@ export type ModalBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type ModalBlockAutocomplete = {
+  __typename?: 'ModalBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ModalBackdropImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ModalBackgroundImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ModalPrimaryButtonLink?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type ModalBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ModalBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ModalBlockAutocompleteModalPrimaryButtonLinkArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ModalBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ModalBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ModalBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ModalBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type ModalBlockFacet = {
@@ -32135,6 +39294,7 @@ export type ModalBlockOrderByInput = {
 
 export type ModalBlockOutput = {
   __typename?: 'ModalBlockOutput';
+  autocomplete?: Maybe<ModalBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<ModalBlockFacet>;
   items?: Maybe<Array<Maybe<ModalBlock>>>;
@@ -32214,8 +39374,62 @@ export type MonetaryReward = IContent & {
   Url?: Maybe<Scalars['String']>;
   UseAmounts?: Maybe<Scalars['Bool']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type MonetaryRewardAutocomplete = {
+  __typename?: 'MonetaryRewardAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type MonetaryRewardAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type MonetaryRewardAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type MonetaryRewardAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type MonetaryRewardAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type MonetaryRewardAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type MonetaryRewardAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type MonetaryRewardFacet = {
@@ -32370,6 +39584,7 @@ export type MonetaryRewardOrderByInput = {
 
 export type MonetaryRewardOutput = {
   __typename?: 'MonetaryRewardOutput';
+  autocomplete?: Maybe<MonetaryRewardAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<MonetaryRewardFacet>;
   items?: Maybe<Array<Maybe<MonetaryReward>>>;
@@ -32440,8 +39655,64 @@ export type NavigationBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type NavigationBlockAutocomplete = {
+  __typename?: 'NavigationBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RootPage?: Maybe<ContentModelReferenceAutocomplete>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type NavigationBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NavigationBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NavigationBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NavigationBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NavigationBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NavigationBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type NavigationBlockFacet = {
@@ -32637,6 +39908,7 @@ export type NavigationBlockOrderByInput = {
 
 export type NavigationBlockOutput = {
   __typename?: 'NavigationBlockOutput';
+  autocomplete?: Maybe<NavigationBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<NavigationBlockFacet>;
   items?: Maybe<Array<Maybe<NavigationBlock>>>;
@@ -32741,8 +40013,117 @@ export type NewProductsPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type NewProductsPageAutocomplete = {
+  __typename?: 'NewProductsPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  ManualExclusion?: Maybe<ContentModelReferenceAutocomplete>;
+  ManualInclusion?: Maybe<ContentModelReferenceAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type NewProductsPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NewProductsPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NewProductsPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NewProductsPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NewProductsPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NewProductsPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NewProductsPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NewProductsPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NewProductsPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NewProductsPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NewProductsPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NewProductsPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NewProductsPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type NewProductsPageFacet = {
@@ -33165,6 +40546,7 @@ export type NewProductsPageOrderByInput = {
 
 export type NewProductsPageOutput = {
   __typename?: 'NewProductsPageOutput';
+  autocomplete?: Maybe<NewProductsPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<NewProductsPageFacet>;
   items?: Maybe<Array<Maybe<NewProductsPage>>>;
@@ -33265,13 +40647,80 @@ export type NodeContent = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type NodeContentAutocomplete = {
+  __typename?: 'NodeContentAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<NodeContentCategoriesAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  SeoInformation?: Maybe<NodeContentSeoInformationAutocomplete>;
+  SeoUri?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type NodeContentAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NodeContentAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NodeContentAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NodeContentAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NodeContentAutocompleteSeoUriArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NodeContentAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NodeContentAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type NodeContentCategories = {
   __typename?: 'NodeContentCategories';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type NodeContentCategoriesAutocomplete = {
+  __typename?: 'NodeContentCategoriesAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type NodeContentCategoriesFacet = {
@@ -33475,6 +40924,7 @@ export type NodeContentOrderByInput = {
 
 export type NodeContentOutput = {
   __typename?: 'NodeContentOutput';
+  autocomplete?: Maybe<NodeContentAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<NodeContentFacet>;
   items?: Maybe<Array<Maybe<NodeContent>>>;
@@ -33491,6 +40941,31 @@ export type NodeContentSeoInformation = {
   Description?: Maybe<Scalars['String']>;
   Keywords?: Maybe<Scalars['String']>;
   Title?: Maybe<Scalars['String']>;
+};
+
+export type NodeContentSeoInformationAutocomplete = {
+  __typename?: 'NodeContentSeoInformationAutocomplete';
+  Description?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Keywords?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Title?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type NodeContentSeoInformationAutocompleteDescriptionArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NodeContentSeoInformationAutocompleteKeywordsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NodeContentSeoInformationAutocompleteTitleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type NodeContentSeoInformationFacet = {
@@ -33598,8 +41073,62 @@ export type NumberElementBlock = IContent & {
   Url?: Maybe<Scalars['String']>;
   Validators?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type NumberElementBlockAutocomplete = {
+  __typename?: 'NumberElementBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type NumberElementBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NumberElementBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NumberElementBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NumberElementBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NumberElementBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NumberElementBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type NumberElementBlockFacet = {
@@ -33808,6 +41337,7 @@ export type NumberElementBlockOrderByInput = {
 
 export type NumberElementBlockOutput = {
   __typename?: 'NumberElementBlockOutput';
+  autocomplete?: Maybe<NumberElementBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<NumberElementBlockFacet>;
   items?: Maybe<Array<Maybe<NumberElementBlock>>>;
@@ -33887,8 +41417,62 @@ export type NumericFilterBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type NumericFilterBlockAutocomplete = {
+  __typename?: 'NumericFilterBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type NumericFilterBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NumericFilterBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NumericFilterBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NumericFilterBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NumericFilterBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type NumericFilterBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type NumericFilterBlockFacet = {
@@ -34060,6 +41644,7 @@ export type NumericFilterBlockOrderByInput = {
 
 export type NumericFilterBlockOutput = {
   __typename?: 'NumericFilterBlockOutput';
+  autocomplete?: Maybe<NumericFilterBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<NumericFilterBlockFacet>;
   items?: Maybe<Array<Maybe<NumericFilterBlock>>>;
@@ -34132,8 +41717,62 @@ export type OdpEmailEventBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type OdpEmailEventBlockAutocomplete = {
+  __typename?: 'ODPEmailEventBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type OdpEmailEventBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpEmailEventBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpEmailEventBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpEmailEventBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpEmailEventBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpEmailEventBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type OdpEmailEventBlockFacet = {
@@ -34326,6 +41965,7 @@ export type OdpEmailEventBlockOrderByInput = {
 
 export type OdpEmailEventBlockOutput = {
   __typename?: 'ODPEmailEventBlockOutput';
+  autocomplete?: Maybe<OdpEmailEventBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<OdpEmailEventBlockFacet>;
   items?: Maybe<Array<Maybe<OdpEmailEventBlock>>>;
@@ -34405,8 +42045,62 @@ export type OdpEventTrackingBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type OdpEventTrackingBlockAutocomplete = {
+  __typename?: 'ODPEventTrackingBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type OdpEventTrackingBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpEventTrackingBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpEventTrackingBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpEventTrackingBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpEventTrackingBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpEventTrackingBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type OdpEventTrackingBlockFacet = {
@@ -34629,6 +42323,7 @@ export type OdpEventTrackingBlockOrderByInput = {
 
 export type OdpEventTrackingBlockOutput = {
   __typename?: 'ODPEventTrackingBlockOutput';
+  autocomplete?: Maybe<OdpEventTrackingBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<OdpEventTrackingBlockFacet>;
   items?: Maybe<Array<Maybe<OdpEventTrackingBlock>>>;
@@ -34705,8 +42400,62 @@ export type OdpListConsentFormBlock = IContent & {
   Url?: Maybe<Scalars['String']>;
   Validators?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type OdpListConsentFormBlockAutocomplete = {
+  __typename?: 'ODPListConsentFormBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type OdpListConsentFormBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpListConsentFormBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpListConsentFormBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpListConsentFormBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpListConsentFormBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpListConsentFormBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type OdpListConsentFormBlockFacet = {
@@ -34925,6 +42674,7 @@ export type OdpListConsentFormBlockOrderByInput = {
 
 export type OdpListConsentFormBlockOutput = {
   __typename?: 'ODPListConsentFormBlockOutput';
+  autocomplete?: Maybe<OdpListConsentFormBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<OdpListConsentFormBlockFacet>;
   items?: Maybe<Array<Maybe<OdpListConsentFormBlock>>>;
@@ -34995,8 +42745,62 @@ export type OdpListFormBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type OdpListFormBlockAutocomplete = {
+  __typename?: 'ODPListFormBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type OdpListFormBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpListFormBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpListFormBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpListFormBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpListFormBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpListFormBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type OdpListFormBlockFacet = {
@@ -35161,6 +42965,7 @@ export type OdpListFormBlockOrderByInput = {
 
 export type OdpListFormBlockOutput = {
   __typename?: 'ODPListFormBlockOutput';
+  autocomplete?: Maybe<OdpListFormBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<OdpListFormBlockFacet>;
   items?: Maybe<Array<Maybe<OdpListFormBlock>>>;
@@ -35231,8 +43036,62 @@ export type OdpSearchEventBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type OdpSearchEventBlockAutocomplete = {
+  __typename?: 'ODPSearchEventBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type OdpSearchEventBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpSearchEventBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpSearchEventBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpSearchEventBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpSearchEventBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpSearchEventBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type OdpSearchEventBlockFacet = {
@@ -35415,6 +43274,7 @@ export type OdpSearchEventBlockOrderByInput = {
 
 export type OdpSearchEventBlockOutput = {
   __typename?: 'ODPSearchEventBlockOutput';
+  autocomplete?: Maybe<OdpSearchEventBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<OdpSearchEventBlockFacet>;
   items?: Maybe<Array<Maybe<OdpSearchEventBlock>>>;
@@ -35489,8 +43349,62 @@ export type OdpUpdateProfileBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type OdpUpdateProfileBlockAutocomplete = {
+  __typename?: 'ODPUpdateProfileBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type OdpUpdateProfileBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpUpdateProfileBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpUpdateProfileBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpUpdateProfileBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpUpdateProfileBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OdpUpdateProfileBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type OdpUpdateProfileBlockFacet = {
@@ -35683,6 +43597,7 @@ export type OdpUpdateProfileBlockOrderByInput = {
 
 export type OdpUpdateProfileBlockOutput = {
   __typename?: 'ODPUpdateProfileBlockOutput';
+  autocomplete?: Maybe<OdpUpdateProfileBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<OdpUpdateProfileBlockFacet>;
   items?: Maybe<Array<Maybe<OdpUpdateProfileBlock>>>;
@@ -35790,8 +43705,115 @@ export type OrderConfirmationMailPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type OrderConfirmationMailPageAutocomplete = {
+  __typename?: 'OrderConfirmationMailPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type OrderConfirmationMailPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderConfirmationMailPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderConfirmationMailPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderConfirmationMailPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderConfirmationMailPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderConfirmationMailPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderConfirmationMailPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderConfirmationMailPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderConfirmationMailPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderConfirmationMailPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderConfirmationMailPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderConfirmationMailPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderConfirmationMailPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type OrderConfirmationMailPageFacet = {
@@ -36186,6 +44208,7 @@ export type OrderConfirmationMailPageOrderByInput = {
 
 export type OrderConfirmationMailPageOutput = {
   __typename?: 'OrderConfirmationMailPageOutput';
+  autocomplete?: Maybe<OrderConfirmationMailPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<OrderConfirmationMailPageFacet>;
   items?: Maybe<Array<Maybe<OrderConfirmationMailPage>>>;
@@ -36309,8 +44332,115 @@ export type OrderConfirmationPage = IContent & {
   Title?: Maybe<Scalars['String']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type OrderConfirmationPageAutocomplete = {
+  __typename?: 'OrderConfirmationPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type OrderConfirmationPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderConfirmationPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderConfirmationPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderConfirmationPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderConfirmationPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderConfirmationPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderConfirmationPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderConfirmationPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderConfirmationPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderConfirmationPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderConfirmationPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderConfirmationPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderConfirmationPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type OrderConfirmationPageFacet = {
@@ -36717,6 +44847,7 @@ export type OrderConfirmationPageOrderByInput = {
 
 export type OrderConfirmationPageOutput = {
   __typename?: 'OrderConfirmationPageOutput';
+  autocomplete?: Maybe<OrderConfirmationPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<OrderConfirmationPageFacet>;
   items?: Maybe<Array<Maybe<OrderConfirmationPage>>>;
@@ -36839,8 +44970,115 @@ export type OrderDetailsPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type OrderDetailsPageAutocomplete = {
+  __typename?: 'OrderDetailsPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type OrderDetailsPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderDetailsPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderDetailsPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderDetailsPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderDetailsPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderDetailsPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderDetailsPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderDetailsPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderDetailsPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderDetailsPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderDetailsPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderDetailsPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderDetailsPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type OrderDetailsPageFacet = {
@@ -37225,6 +45463,7 @@ export type OrderDetailsPageOrderByInput = {
 
 export type OrderDetailsPageOutput = {
   __typename?: 'OrderDetailsPageOutput';
+  autocomplete?: Maybe<OrderDetailsPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<OrderDetailsPageFacet>;
   items?: Maybe<Array<Maybe<OrderDetailsPage>>>;
@@ -37320,8 +45559,63 @@ export type OrderHistoryBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type OrderHistoryBlockAutocomplete = {
+  __typename?: 'OrderHistoryBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type OrderHistoryBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderHistoryBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderHistoryBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderHistoryBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderHistoryBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderHistoryBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type OrderHistoryBlockFacet = {
@@ -37515,6 +45809,7 @@ export type OrderHistoryBlockOrderByInput = {
 
 export type OrderHistoryBlockOutput = {
   __typename?: 'OrderHistoryBlockOutput';
+  autocomplete?: Maybe<OrderHistoryBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<OrderHistoryBlockFacet>;
   items?: Maybe<Array<Maybe<OrderHistoryBlock>>>;
@@ -37612,8 +45907,115 @@ export type OrderHistoryPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type OrderHistoryPageAutocomplete = {
+  __typename?: 'OrderHistoryPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type OrderHistoryPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderHistoryPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderHistoryPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderHistoryPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderHistoryPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderHistoryPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderHistoryPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderHistoryPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderHistoryPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderHistoryPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderHistoryPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderHistoryPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderHistoryPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type OrderHistoryPageFacet = {
@@ -37998,6 +46400,7 @@ export type OrderHistoryPageOrderByInput = {
 
 export type OrderHistoryPageOutput = {
   __typename?: 'OrderHistoryPageOutput';
+  autocomplete?: Maybe<OrderHistoryPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<OrderHistoryPageFacet>;
   items?: Maybe<Array<Maybe<OrderHistoryPage>>>;
@@ -38117,8 +46520,115 @@ export type OrderPadsPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type OrderPadsPageAutocomplete = {
+  __typename?: 'OrderPadsPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type OrderPadsPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderPadsPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderPadsPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderPadsPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderPadsPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderPadsPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderPadsPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderPadsPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderPadsPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderPadsPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderPadsPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderPadsPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderPadsPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type OrderPadsPageFacet = {
@@ -38503,6 +47013,7 @@ export type OrderPadsPageOrderByInput = {
 
 export type OrderPadsPageOutput = {
   __typename?: 'OrderPadsPageOutput';
+  autocomplete?: Maybe<OrderPadsPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<OrderPadsPageFacet>;
   items?: Maybe<Array<Maybe<OrderPadsPage>>>;
@@ -38598,8 +47109,63 @@ export type OrderSearchBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type OrderSearchBlockAutocomplete = {
+  __typename?: 'OrderSearchBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type OrderSearchBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderSearchBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderSearchBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderSearchBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderSearchBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrderSearchBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type OrderSearchBlockFacet = {
@@ -38783,6 +47349,7 @@ export type OrderSearchBlockOrderByInput = {
 
 export type OrderSearchBlockOutput = {
   __typename?: 'OrderSearchBlockOutput';
+  autocomplete?: Maybe<OrderSearchBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<OrderSearchBlockFacet>;
   items?: Maybe<Array<Maybe<OrderSearchBlock>>>;
@@ -38879,8 +47446,115 @@ export type OrdersPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type OrdersPageAutocomplete = {
+  __typename?: 'OrdersPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type OrdersPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrdersPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrdersPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrdersPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrdersPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrdersPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrdersPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrdersPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrdersPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrdersPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrdersPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrdersPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrdersPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type OrdersPageFacet = {
@@ -39265,6 +47939,7 @@ export type OrdersPageOrderByInput = {
 
 export type OrdersPageOutput = {
   __typename?: 'OrdersPageOutput';
+  autocomplete?: Maybe<OrdersPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<OrdersPageFacet>;
   items?: Maybe<Array<Maybe<OrdersPage>>>;
@@ -39384,8 +48059,115 @@ export type OrganizationPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type OrganizationPageAutocomplete = {
+  __typename?: 'OrganizationPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type OrganizationPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrganizationPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrganizationPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrganizationPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrganizationPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrganizationPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrganizationPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrganizationPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrganizationPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrganizationPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrganizationPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrganizationPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type OrganizationPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type OrganizationPageFacet = {
@@ -39770,6 +48552,7 @@ export type OrganizationPageOrderByInput = {
 
 export type OrganizationPageOutput = {
   __typename?: 'OrganizationPageOutput';
+  autocomplete?: Maybe<OrganizationPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<OrganizationPageFacet>;
   items?: Maybe<Array<Maybe<OrganizationPage>>>;
@@ -39874,13 +48657,20 @@ export type PackageContent = IContent & {
   Url?: Maybe<Scalars['String']>;
   Weight?: Maybe<Scalars['Float']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
 };
 
 export type PackageContentAssociations = {
   __typename?: 'PackageContentAssociations';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type PackageContentAssociationsAutocomplete = {
+  __typename?: 'PackageContentAssociationsAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type PackageContentAssociationsFacet = {
@@ -39896,9 +48686,79 @@ export type PackageContentAssociationsWhereInput = {
   ContentLink?: InputMaybe<ContentModelReferenceWhereInput>;
 };
 
+export type PackageContentAutocomplete = {
+  __typename?: 'PackageContentAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Associations?: Maybe<PackageContentAssociationsAutocomplete>;
+  Categories?: Maybe<PackageContentCategoriesAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  InventoryReference?: Maybe<ContentModelReferenceAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  PackageReference?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentEntries?: Maybe<PackageContentRelationsAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  PriceReference?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  SeoInformation?: Maybe<PackageContentSeoInformationAutocomplete>;
+  SeoUri?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type PackageContentAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PackageContentAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PackageContentAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PackageContentAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PackageContentAutocompleteSeoUriArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PackageContentAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PackageContentAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
 export type PackageContentCategories = {
   __typename?: 'PackageContentCategories';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type PackageContentCategoriesAutocomplete = {
+  __typename?: 'PackageContentCategoriesAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type PackageContentCategoriesFacet = {
@@ -40145,6 +49005,7 @@ export type PackageContentOrderByInput = {
 
 export type PackageContentOutput = {
   __typename?: 'PackageContentOutput';
+  autocomplete?: Maybe<PackageContentAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<PackageContentFacet>;
   items?: Maybe<Array<Maybe<PackageContent>>>;
@@ -40159,6 +49020,11 @@ export type PackageContentOutputTotalArgs = {
 export type PackageContentRelations = {
   __typename?: 'PackageContentRelations';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type PackageContentRelationsAutocomplete = {
+  __typename?: 'PackageContentRelationsAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type PackageContentRelationsFacet = {
@@ -40179,6 +49045,31 @@ export type PackageContentSeoInformation = {
   Description?: Maybe<Scalars['String']>;
   Keywords?: Maybe<Scalars['String']>;
   Title?: Maybe<Scalars['String']>;
+};
+
+export type PackageContentSeoInformationAutocomplete = {
+  __typename?: 'PackageContentSeoInformationAutocomplete';
+  Description?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Keywords?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Title?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type PackageContentSeoInformationAutocompleteDescriptionArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PackageContentSeoInformationAutocompleteKeywordsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PackageContentSeoInformationAutocompleteTitleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type PackageContentSeoInformationFacet = {
@@ -40356,8 +49247,71 @@ export type PageListBlock = IContent & {
   Template?: Maybe<Scalars['String']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type PageListBlockAutocomplete = {
+  __typename?: 'PageListBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  CategoryListFilter?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  PageTypeFilter?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type PageListBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PageListBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PageListBlockAutocompletePageTypeFilterArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PageListBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PageListBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PageListBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PageListBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type PageListBlockFacet = {
@@ -40659,6 +49613,7 @@ export type PageListBlockOrderByInput = {
 
 export type PageListBlockOutput = {
   __typename?: 'PageListBlockOutput';
+  autocomplete?: Maybe<PageListBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<PageListBlockFacet>;
   items?: Maybe<Array<Maybe<PageListBlock>>>;
@@ -40743,8 +49698,62 @@ export type ParagraphTextElementBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type ParagraphTextElementBlockAutocomplete = {
+  __typename?: 'ParagraphTextElementBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type ParagraphTextElementBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ParagraphTextElementBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ParagraphTextElementBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ParagraphTextElementBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ParagraphTextElementBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ParagraphTextElementBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type ParagraphTextElementBlockFacet = {
@@ -40936,6 +49945,7 @@ export type ParagraphTextElementBlockOrderByInput = {
 
 export type ParagraphTextElementBlockOutput = {
   __typename?: 'ParagraphTextElementBlockOutput';
+  autocomplete?: Maybe<ParagraphTextElementBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<ParagraphTextElementBlockFacet>;
   items?: Maybe<Array<Maybe<ParagraphTextElementBlock>>>;
@@ -41005,8 +50015,70 @@ export type PdfFile = IContent & {
   Thumbnail?: Maybe<BlobModel>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type PdfFileAutocomplete = {
+  __typename?: 'PdfFileAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  MimeType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Thumbnail?: Maybe<BlobModelAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type PdfFileAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PdfFileAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PdfFileAutocompleteMimeTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PdfFileAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PdfFileAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PdfFileAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PdfFileAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type PdfFileFacet = {
@@ -41173,6 +50245,7 @@ export type PdfFileOrderByInput = {
 
 export type PdfFileOutput = {
   __typename?: 'PdfFileOutput';
+  autocomplete?: Maybe<PdfFileAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<PdfFileFacet>;
   items?: Maybe<Array<Maybe<PdfFile>>>;
@@ -41267,8 +50340,115 @@ export type PersonList = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type PersonListAutocomplete = {
+  __typename?: 'PersonListAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type PersonListAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PersonListAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PersonListAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PersonListAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PersonListAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PersonListAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PersonListAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PersonListAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PersonListAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PersonListAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PersonListAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PersonListAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PersonListAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type PersonListFacet = {
@@ -41653,6 +50833,7 @@ export type PersonListOrderByInput = {
 
 export type PersonListOutput = {
   __typename?: 'PersonListOutput';
+  autocomplete?: Maybe<PersonListAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<PersonListFacet>;
   items?: Maybe<Array<Maybe<PersonList>>>;
@@ -41779,8 +50960,116 @@ export type PersonPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type PersonPageAutocomplete = {
+  __typename?: 'PersonPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Image?: Maybe<ContentModelReferenceAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type PersonPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PersonPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PersonPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PersonPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PersonPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PersonPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PersonPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PersonPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PersonPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PersonPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PersonPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PersonPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PersonPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type PersonPageFacet = {
@@ -42227,6 +51516,7 @@ export type PersonPageOrderByInput = {
 
 export type PersonPageOutput = {
   __typename?: 'PersonPageOutput';
+  autocomplete?: Maybe<PersonPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<PersonPageFacet>;
   items?: Maybe<Array<Maybe<PersonPage>>>;
@@ -42323,8 +51613,62 @@ export type PredefinedHiddenElementBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type PredefinedHiddenElementBlockAutocomplete = {
+  __typename?: 'PredefinedHiddenElementBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type PredefinedHiddenElementBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PredefinedHiddenElementBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PredefinedHiddenElementBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PredefinedHiddenElementBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PredefinedHiddenElementBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PredefinedHiddenElementBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type PredefinedHiddenElementBlockFacet = {
@@ -42479,6 +51823,7 @@ export type PredefinedHiddenElementBlockOrderByInput = {
 
 export type PredefinedHiddenElementBlockOutput = {
   __typename?: 'PredefinedHiddenElementBlockOutput';
+  autocomplete?: Maybe<PredefinedHiddenElementBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<PredefinedHiddenElementBlockFacet>;
   items?: Maybe<Array<Maybe<PredefinedHiddenElementBlock>>>;
@@ -42549,13 +51894,20 @@ export type ProductContent = IContent & {
   Url?: Maybe<Scalars['String']>;
   VariantsReference?: Maybe<ContentModelReference>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
 };
 
 export type ProductContentAssociations = {
   __typename?: 'ProductContentAssociations';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type ProductContentAssociationsAutocomplete = {
+  __typename?: 'ProductContentAssociationsAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type ProductContentAssociationsFacet = {
@@ -42571,9 +51923,77 @@ export type ProductContentAssociationsWhereInput = {
   ContentLink?: InputMaybe<ContentModelReferenceWhereInput>;
 };
 
+export type ProductContentAutocomplete = {
+  __typename?: 'ProductContentAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Associations?: Maybe<ProductContentAssociationsAutocomplete>;
+  Categories?: Maybe<ProductContentCategoriesAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentEntries?: Maybe<ProductContentRelationsAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  SeoInformation?: Maybe<ProductContentSeoInformationAutocomplete>;
+  SeoUri?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+  VariantsReference?: Maybe<ContentModelReferenceAutocomplete>;
+};
+
+
+export type ProductContentAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductContentAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductContentAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductContentAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductContentAutocompleteSeoUriArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductContentAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductContentAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
 export type ProductContentCategories = {
   __typename?: 'ProductContentCategories';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type ProductContentCategoriesAutocomplete = {
+  __typename?: 'ProductContentCategoriesAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type ProductContentCategoriesFacet = {
@@ -42783,6 +52203,7 @@ export type ProductContentOrderByInput = {
 
 export type ProductContentOutput = {
   __typename?: 'ProductContentOutput';
+  autocomplete?: Maybe<ProductContentAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<ProductContentFacet>;
   items?: Maybe<Array<Maybe<ProductContent>>>;
@@ -42797,6 +52218,11 @@ export type ProductContentOutputTotalArgs = {
 export type ProductContentRelations = {
   __typename?: 'ProductContentRelations';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type ProductContentRelationsAutocomplete = {
+  __typename?: 'ProductContentRelationsAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type ProductContentRelationsFacet = {
@@ -42817,6 +52243,31 @@ export type ProductContentSeoInformation = {
   Description?: Maybe<Scalars['String']>;
   Keywords?: Maybe<Scalars['String']>;
   Title?: Maybe<Scalars['String']>;
+};
+
+export type ProductContentSeoInformationAutocomplete = {
+  __typename?: 'ProductContentSeoInformationAutocomplete';
+  Description?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Keywords?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Title?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type ProductContentSeoInformationAutocompleteDescriptionArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductContentSeoInformationAutocompleteKeywordsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductContentSeoInformationAutocompleteTitleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type ProductContentSeoInformationFacet = {
@@ -42930,8 +52381,65 @@ export type ProductHeroBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type ProductHeroBlockAutocomplete = {
+  __typename?: 'ProductHeroBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Callout?: Maybe<ProductHeroBlockProductHeroBlockCalloutAutocomplete>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Image?: Maybe<ProductHeroBlockProductHeroBlockImageAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type ProductHeroBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductHeroBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductHeroBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductHeroBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductHeroBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductHeroBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type ProductHeroBlockCallout = IContent & {
@@ -42960,8 +52468,62 @@ export type ProductHeroBlockCallout = IContent & {
   Text?: Maybe<Scalars['String']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type ProductHeroBlockCalloutAutocomplete = {
+  __typename?: 'ProductHeroBlockCalloutAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type ProductHeroBlockCalloutAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductHeroBlockCalloutAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductHeroBlockCalloutAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductHeroBlockCalloutAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductHeroBlockCalloutAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductHeroBlockCalloutAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type ProductHeroBlockCalloutFacet = {
@@ -43146,6 +52708,7 @@ export type ProductHeroBlockCalloutOrderByInput = {
 
 export type ProductHeroBlockCalloutOutput = {
   __typename?: 'ProductHeroBlockCalloutOutput';
+  autocomplete?: Maybe<ProductHeroBlockCalloutAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<ProductHeroBlockCalloutFacet>;
   items?: Maybe<Array<Maybe<ProductHeroBlockCallout>>>;
@@ -43381,8 +52944,62 @@ export type ProductHeroBlockImage = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type ProductHeroBlockImageAutocomplete = {
+  __typename?: 'ProductHeroBlockImageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type ProductHeroBlockImageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductHeroBlockImageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductHeroBlockImageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductHeroBlockImageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductHeroBlockImageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductHeroBlockImageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type ProductHeroBlockImageFacet = {
@@ -43581,6 +53198,7 @@ export type ProductHeroBlockImageOrderByInput = {
 
 export type ProductHeroBlockImageOutput = {
   __typename?: 'ProductHeroBlockImageOutput';
+  autocomplete?: Maybe<ProductHeroBlockImageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<ProductHeroBlockImageFacet>;
   items?: Maybe<Array<Maybe<ProductHeroBlockImage>>>;
@@ -43660,6 +53278,7 @@ export type ProductHeroBlockOrderByInput = {
 
 export type ProductHeroBlockOutput = {
   __typename?: 'ProductHeroBlockOutput';
+  autocomplete?: Maybe<ProductHeroBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<ProductHeroBlockFacet>;
   items?: Maybe<Array<Maybe<ProductHeroBlock>>>;
@@ -43677,6 +53296,38 @@ export type ProductHeroBlockProductHeroBlockCallout = {
   Margin?: Maybe<Scalars['String']>;
   Padding?: Maybe<Scalars['String']>;
   Text?: Maybe<Scalars['String']>;
+};
+
+export type ProductHeroBlockProductHeroBlockCalloutAutocomplete = {
+  __typename?: 'ProductHeroBlockProductHeroBlockCalloutAutocomplete';
+  BackgroundColor?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Text?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type ProductHeroBlockProductHeroBlockCalloutAutocompleteBackgroundColorArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductHeroBlockProductHeroBlockCalloutAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductHeroBlockProductHeroBlockCalloutAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductHeroBlockProductHeroBlockCalloutAutocompleteTextArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type ProductHeroBlockProductHeroBlockCalloutFacet = {
@@ -43743,6 +53394,18 @@ export type ProductHeroBlockProductHeroBlockImage = {
   PaddingRight?: Maybe<Scalars['Int']>;
   PaddingTop?: Maybe<Scalars['Int']>;
   Product?: Maybe<Array<Maybe<ContentAreaItemModel>>>;
+};
+
+export type ProductHeroBlockProductHeroBlockImageAutocomplete = {
+  __typename?: 'ProductHeroBlockProductHeroBlockImageAutocomplete';
+  ImagePosition?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Product?: Maybe<ContentAreaItemModelAutocomplete>;
+};
+
+
+export type ProductHeroBlockProductHeroBlockImageAutocompleteImagePositionArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type ProductHeroBlockProductHeroBlockImageFacet = {
@@ -43903,8 +53566,63 @@ export type ProductSearchBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type ProductSearchBlockAutocomplete = {
+  __typename?: 'ProductSearchBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type ProductSearchBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductSearchBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductSearchBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductSearchBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductSearchBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProductSearchBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type ProductSearchBlockFacet = {
@@ -44172,6 +53890,7 @@ export type ProductSearchBlockOrderByInput = {
 
 export type ProductSearchBlockOutput = {
   __typename?: 'ProductSearchBlockOutput';
+  autocomplete?: Maybe<ProductSearchBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<ProductSearchBlockFacet>;
   items?: Maybe<Array<Maybe<ProductSearchBlock>>>;
@@ -44280,8 +53999,115 @@ export type ProfilePage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type ProfilePageAutocomplete = {
+  __typename?: 'ProfilePageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type ProfilePageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProfilePageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProfilePageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProfilePageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProfilePageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProfilePageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProfilePageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProfilePageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProfilePageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProfilePageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProfilePageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProfilePageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ProfilePageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type ProfilePageFacet = {
@@ -44666,6 +54492,7 @@ export type ProfilePageOrderByInput = {
 
 export type ProfilePageOutput = {
   __typename?: 'ProfilePageOutput';
+  autocomplete?: Maybe<ProfilePageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<ProfilePageFacet>;
   items?: Maybe<Array<Maybe<ProfilePage>>>;
@@ -44758,8 +54585,63 @@ export type PromotionSchedule = IContent & {
   ValidFrom?: Maybe<Scalars['Date']>;
   ValidUntil?: Maybe<Scalars['Date']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type PromotionScheduleAutocomplete = {
+  __typename?: 'PromotionScheduleAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CampaignLink?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type PromotionScheduleAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PromotionScheduleAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PromotionScheduleAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PromotionScheduleAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PromotionScheduleAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PromotionScheduleAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type PromotionScheduleFacet = {
@@ -44932,6 +54814,7 @@ export type PromotionScheduleOrderByInput = {
 
 export type PromotionScheduleOutput = {
   __typename?: 'PromotionScheduleOutput';
+  autocomplete?: Maybe<PromotionScheduleAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<PromotionScheduleFacet>;
   items?: Maybe<Array<Maybe<PromotionSchedule>>>;
@@ -44996,8 +54879,62 @@ export type PurchaseAmount = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type PurchaseAmountAutocomplete = {
+  __typename?: 'PurchaseAmountAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type PurchaseAmountAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PurchaseAmountAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PurchaseAmountAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PurchaseAmountAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PurchaseAmountAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PurchaseAmountAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type PurchaseAmountFacet = {
@@ -45142,6 +55079,7 @@ export type PurchaseAmountOrderByInput = {
 
 export type PurchaseAmountOutput = {
   __typename?: 'PurchaseAmountOutput';
+  autocomplete?: Maybe<PurchaseAmountAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<PurchaseAmountFacet>;
   items?: Maybe<Array<Maybe<PurchaseAmount>>>;
@@ -45205,8 +55143,63 @@ export type PurchaseQuantity = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type PurchaseQuantityAutocomplete = {
+  __typename?: 'PurchaseQuantityAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Items?: Maybe<ContentModelReferenceAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type PurchaseQuantityAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PurchaseQuantityAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PurchaseQuantityAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PurchaseQuantityAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PurchaseQuantityAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type PurchaseQuantityAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type PurchaseQuantityFacet = {
@@ -45370,6 +55363,7 @@ export type PurchaseQuantityOrderByInput = {
 
 export type PurchaseQuantityOutput = {
   __typename?: 'PurchaseQuantityOutput';
+  autocomplete?: Maybe<PurchaseQuantityAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<PurchaseQuantityFacet>;
   items?: Maybe<Array<Maybe<PurchaseQuantity>>>;
@@ -45480,6 +55474,7 @@ export type Query = {
   GoogleMapsBlock?: Maybe<GoogleMapsBlockOutput>;
   GroupAdmissionBlock?: Maybe<GroupAdmissionBlockOutput>;
   GroupCreationBlock?: Maybe<GroupCreationBlockOutput>;
+  HcaptchaElementBlock?: Maybe<HcaptchaElementBlockOutput>;
   HealthChatbotBlock?: Maybe<HealthChatbotBlockOutput>;
   HeroBlock?: Maybe<HeroBlockOutput>;
   HeroBlockCallout?: Maybe<HeroBlockCalloutOutput>;
@@ -46321,6 +56316,17 @@ export type QueryGroupCreationBlockArgs = {
   orderBy?: InputMaybe<GroupCreationBlockOrderByInput>;
   skip?: InputMaybe<Scalars['Int']>;
   where?: InputMaybe<GroupCreationBlockWhereInput>;
+};
+
+
+export type QueryHcaptchaElementBlockArgs = {
+  cursor?: InputMaybe<Scalars['String']>;
+  ids?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  locale?: InputMaybe<Array<InputMaybe<Locales>>>;
+  orderBy?: InputMaybe<HcaptchaElementBlockOrderByInput>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<HcaptchaElementBlockWhereInput>;
 };
 
 
@@ -47536,6 +57542,7 @@ export type QueryRef = {
   GoogleMapsBlock?: Maybe<GoogleMapsBlockOutput>;
   GroupAdmissionBlock?: Maybe<GroupAdmissionBlockOutput>;
   GroupCreationBlock?: Maybe<GroupCreationBlockOutput>;
+  HcaptchaElementBlock?: Maybe<HcaptchaElementBlockOutput>;
   HealthChatbotBlock?: Maybe<HealthChatbotBlockOutput>;
   HeroBlock?: Maybe<HeroBlockOutput>;
   HeroBlockCallout?: Maybe<HeroBlockCalloutOutput>;
@@ -48377,6 +58384,17 @@ export type QueryRefGroupCreationBlockArgs = {
   orderBy?: InputMaybe<GroupCreationBlockOrderByInput>;
   skip?: InputMaybe<Scalars['Int']>;
   where?: InputMaybe<GroupCreationBlockWhereInput>;
+};
+
+
+export type QueryRefHcaptchaElementBlockArgs = {
+  cursor?: InputMaybe<Scalars['String']>;
+  ids?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  locale?: InputMaybe<Array<InputMaybe<Locales>>>;
+  orderBy?: InputMaybe<HcaptchaElementBlockOrderByInput>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<HcaptchaElementBlockWhereInput>;
 };
 
 
@@ -49554,8 +59572,63 @@ export type QuickOrderBlock = IContent & {
   Title?: Maybe<Scalars['String']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type QuickOrderBlockAutocomplete = {
+  __typename?: 'QuickOrderBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type QuickOrderBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type QuickOrderBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type QuickOrderBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type QuickOrderBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type QuickOrderBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type QuickOrderBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type QuickOrderBlockFacet = {
@@ -49759,6 +59832,7 @@ export type QuickOrderBlockOrderByInput = {
 
 export type QuickOrderBlockOutput = {
   __typename?: 'QuickOrderBlockOutput';
+  autocomplete?: Maybe<QuickOrderBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<QuickOrderBlockFacet>;
   items?: Maybe<Array<Maybe<QuickOrderBlock>>>;
@@ -49857,8 +59931,115 @@ export type QuickOrderPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type QuickOrderPageAutocomplete = {
+  __typename?: 'QuickOrderPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type QuickOrderPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type QuickOrderPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type QuickOrderPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type QuickOrderPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type QuickOrderPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type QuickOrderPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type QuickOrderPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type QuickOrderPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type QuickOrderPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type QuickOrderPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type QuickOrderPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type QuickOrderPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type QuickOrderPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type QuickOrderPageFacet = {
@@ -50245,6 +60426,7 @@ export type QuickOrderPageOrderByInput = {
 
 export type QuickOrderPageOutput = {
   __typename?: 'QuickOrderPageOutput';
+  autocomplete?: Maybe<QuickOrderPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<QuickOrderPageFacet>;
   items?: Maybe<Array<Maybe<QuickOrderPage>>>;
@@ -50342,8 +60524,62 @@ export type RangeElementBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type RangeElementBlockAutocomplete = {
+  __typename?: 'RangeElementBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type RangeElementBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RangeElementBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RangeElementBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RangeElementBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RangeElementBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RangeElementBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type RangeElementBlockFacet = {
@@ -50556,6 +60792,7 @@ export type RangeElementBlockOrderByInput = {
 
 export type RangeElementBlockOutput = {
   __typename?: 'RangeElementBlockOutput';
+  autocomplete?: Maybe<RangeElementBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<RangeElementBlockFacet>;
   items?: Maybe<Array<Maybe<RangeElementBlock>>>;
@@ -50608,6 +60845,7 @@ export type RangeFacetsInput = {
 };
 
 export enum Ranking {
+  BoostOnly = 'BOOST_ONLY',
   Doc = 'DOC',
   Relevance = 'RELEVANCE'
 }
@@ -50644,8 +60882,63 @@ export type RatingBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type RatingBlockAutocomplete = {
+  __typename?: 'RatingBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type RatingBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RatingBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RatingBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RatingBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RatingBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RatingBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type RatingBlockFacet = {
@@ -50859,6 +61152,7 @@ export type RatingBlockOrderByInput = {
 
 export type RatingBlockOutput = {
   __typename?: 'RatingBlockOutput';
+  autocomplete?: Maybe<RatingBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<RatingBlockFacet>;
   items?: Maybe<Array<Maybe<RatingBlock>>>;
@@ -50931,8 +61225,62 @@ export type RecaptchaElementBlock = IContent & {
   Url?: Maybe<Scalars['String']>;
   Validators?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type RecaptchaElementBlockAutocomplete = {
+  __typename?: 'RecaptchaElementBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type RecaptchaElementBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RecaptchaElementBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RecaptchaElementBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RecaptchaElementBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RecaptchaElementBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RecaptchaElementBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type RecaptchaElementBlockFacet = {
@@ -51114,6 +61462,7 @@ export type RecaptchaElementBlockOrderByInput = {
 
 export type RecaptchaElementBlockOutput = {
   __typename?: 'RecaptchaElementBlockOutput';
+  autocomplete?: Maybe<RecaptchaElementBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<RecaptchaElementBlockFacet>;
   items?: Maybe<Array<Maybe<RecaptchaElementBlock>>>;
@@ -51181,8 +61530,62 @@ export type RedemptionLimitsData = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type RedemptionLimitsDataAutocomplete = {
+  __typename?: 'RedemptionLimitsDataAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type RedemptionLimitsDataAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RedemptionLimitsDataAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RedemptionLimitsDataAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RedemptionLimitsDataAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RedemptionLimitsDataAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RedemptionLimitsDataAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type RedemptionLimitsDataFacet = {
@@ -51348,6 +61751,7 @@ export type RedemptionLimitsDataOrderByInput = {
 
 export type RedemptionLimitsDataOutput = {
   __typename?: 'RedemptionLimitsDataOutput';
+  autocomplete?: Maybe<RedemptionLimitsDataAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<RedemptionLimitsDataFacet>;
   items?: Maybe<Array<Maybe<RedemptionLimitsData>>>;
@@ -51411,8 +61815,62 @@ export type Relations = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type RelationsAutocomplete = {
+  __typename?: 'RelationsAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type RelationsAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RelationsAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RelationsAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RelationsAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RelationsAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RelationsAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type RelationsFacet = {
@@ -51557,6 +62015,7 @@ export type RelationsOrderByInput = {
 
 export type RelationsOutput = {
   __typename?: 'RelationsOutput';
+  autocomplete?: Maybe<RelationsAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<RelationsFacet>;
   items?: Maybe<Array<Maybe<Relations>>>;
@@ -51620,8 +62079,70 @@ export type ReportingMediaData = IContent & {
   Thumbnail?: Maybe<BlobModel>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type ReportingMediaDataAutocomplete = {
+  __typename?: 'ReportingMediaDataAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  MimeType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Thumbnail?: Maybe<BlobModelAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type ReportingMediaDataAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ReportingMediaDataAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ReportingMediaDataAutocompleteMimeTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ReportingMediaDataAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ReportingMediaDataAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ReportingMediaDataAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ReportingMediaDataAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type ReportingMediaDataFacet = {
@@ -51788,6 +62309,7 @@ export type ReportingMediaDataOrderByInput = {
 
 export type ReportingMediaDataOutput = {
   __typename?: 'ReportingMediaDataOutput';
+  autocomplete?: Maybe<ReportingMediaDataAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<ReportingMediaDataFacet>;
   items?: Maybe<Array<Maybe<ReportingMediaData>>>;
@@ -51853,8 +62375,62 @@ export type ResetButtonElementBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type ResetButtonElementBlockAutocomplete = {
+  __typename?: 'ResetButtonElementBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type ResetButtonElementBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetButtonElementBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetButtonElementBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetButtonElementBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetButtonElementBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetButtonElementBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type ResetButtonElementBlockFacet = {
@@ -52019,6 +62595,7 @@ export type ResetButtonElementBlockOrderByInput = {
 
 export type ResetButtonElementBlockOutput = {
   __typename?: 'ResetButtonElementBlockOutput';
+  autocomplete?: Maybe<ResetButtonElementBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<ResetButtonElementBlockFacet>;
   items?: Maybe<Array<Maybe<ResetButtonElementBlock>>>;
@@ -52113,8 +62690,115 @@ export type ResetPasswordMailPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type ResetPasswordMailPageAutocomplete = {
+  __typename?: 'ResetPasswordMailPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type ResetPasswordMailPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetPasswordMailPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetPasswordMailPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetPasswordMailPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetPasswordMailPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetPasswordMailPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetPasswordMailPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetPasswordMailPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetPasswordMailPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetPasswordMailPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetPasswordMailPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetPasswordMailPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetPasswordMailPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type ResetPasswordMailPageFacet = {
@@ -52509,6 +63193,7 @@ export type ResetPasswordMailPageOrderByInput = {
 
 export type ResetPasswordMailPageOutput = {
   __typename?: 'ResetPasswordMailPageOutput';
+  autocomplete?: Maybe<ResetPasswordMailPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<ResetPasswordMailPageFacet>;
   items?: Maybe<Array<Maybe<ResetPasswordMailPage>>>;
@@ -52629,8 +63314,115 @@ export type ResetPasswordPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type ResetPasswordPageAutocomplete = {
+  __typename?: 'ResetPasswordPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type ResetPasswordPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetPasswordPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetPasswordPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetPasswordPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetPasswordPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetPasswordPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetPasswordPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetPasswordPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetPasswordPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetPasswordPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetPasswordPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetPasswordPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ResetPasswordPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type ResetPasswordPageFacet = {
@@ -53015,6 +63807,7 @@ export type ResetPasswordPageOrderByInput = {
 
 export type ResetPasswordPageOutput = {
   __typename?: 'ResetPasswordPageOutput';
+  autocomplete?: Maybe<ResetPasswordPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<ResetPasswordPageFacet>;
   items?: Maybe<Array<Maybe<ResetPasswordPage>>>;
@@ -53119,8 +63912,70 @@ export type RssReaderBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type RssReaderBlockAutocomplete = {
+  __typename?: 'RssReaderBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RssUrl?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type RssReaderBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RssReaderBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RssReaderBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RssReaderBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RssReaderBlockAutocompleteRssUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RssReaderBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type RssReaderBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type RssReaderBlockFacet = {
@@ -53351,6 +64206,7 @@ export type RssReaderBlockOrderByInput = {
 
 export type RssReaderBlockOutput = {
   __typename?: 'RssReaderBlockOutput';
+  autocomplete?: Maybe<RssReaderBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<RssReaderBlockFacet>;
   items?: Maybe<Array<Maybe<RssReaderBlock>>>;
@@ -53458,8 +64314,117 @@ export type SalesPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type SalesPageAutocomplete = {
+  __typename?: 'SalesPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  ManualExclusion?: Maybe<ContentModelReferenceAutocomplete>;
+  ManualInclusion?: Maybe<ContentModelReferenceAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type SalesPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SalesPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SalesPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SalesPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SalesPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SalesPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SalesPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SalesPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SalesPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SalesPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SalesPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SalesPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SalesPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type SalesPageFacet = {
@@ -53882,6 +64847,7 @@ export type SalesPageOrderByInput = {
 
 export type SalesPageOutput = {
   __typename?: 'SalesPageOutput';
+  autocomplete?: Maybe<SalesPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<SalesPageFacet>;
   items?: Maybe<Array<Maybe<SalesPage>>>;
@@ -54010,8 +64976,115 @@ export type SearchResultPage = IContent & {
   TopContentArea?: Maybe<Array<Maybe<ContentAreaItemModelSearch>>>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type SearchResultPageAutocomplete = {
+  __typename?: 'SearchResultPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type SearchResultPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SearchResultPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SearchResultPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SearchResultPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SearchResultPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SearchResultPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SearchResultPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SearchResultPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SearchResultPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SearchResultPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SearchResultPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SearchResultPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SearchResultPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type SearchResultPageFacet = {
@@ -54408,6 +65481,7 @@ export type SearchResultPageOrderByInput = {
 
 export type SearchResultPageOutput = {
   __typename?: 'SearchResultPageOutput';
+  autocomplete?: Maybe<SearchResultPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<SearchResultPageFacet>;
   items?: Maybe<Array<Maybe<SearchResultPage>>>;
@@ -54485,18 +65559,10 @@ export type SearchableStringFilterInput = {
   eq?: InputMaybe<Scalars['String']>;
   /** `exist` matches results that have this field. */
   exist?: InputMaybe<Scalars['Boolean']>;
-  /** `gt` retrieves results with matches that have a value which is `greater than` it. */
-  gt?: InputMaybe<Scalars['String']>;
-  /** `gte` retrieves results with matches that have a value which is `greater than or equal to` it. */
-  gte?: InputMaybe<Scalars['String']>;
   /** `in` matches with 1 or more exact values in a list. Example: `in: ["word1", "word2", "this is a phrase"]` */
   in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   /** `like` matches on substrings with wildcard support: `%` to match on 0 or more characters, `_` to match on any character.  */
   like?: InputMaybe<Scalars['String']>;
-  /** `lt` retrieves results with matches that have a value which is `lower than` it. */
-  lt?: InputMaybe<Scalars['String']>;
-  /** `lte` retrieves results with matches that have a value which is `lower than or equal to` it. */
-  lte?: InputMaybe<Scalars['String']>;
   /** `not_eq` retrieves results not matching with an exact (but case-insensitive) value. */
   notEq?: InputMaybe<Scalars['String']>;
   /** `not_in` returns results that do not match with 1 or more exact values in a list. Example: `not_in: ["word1", "word2", "this is a phrase"]` */
@@ -54538,8 +65604,62 @@ export type SelectionElementBlock = IContent & {
   Url?: Maybe<Scalars['String']>;
   Validators?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type SelectionElementBlockAutocomplete = {
+  __typename?: 'SelectionElementBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type SelectionElementBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SelectionElementBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SelectionElementBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SelectionElementBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SelectionElementBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SelectionElementBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type SelectionElementBlockFacet = {
@@ -54768,6 +65888,7 @@ export type SelectionElementBlockOrderByInput = {
 
 export type SelectionElementBlockOutput = {
   __typename?: 'SelectionElementBlockOutput';
+  autocomplete?: Maybe<SelectionElementBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<SelectionElementBlockFacet>;
   items?: Maybe<Array<Maybe<SelectionElementBlock>>>;
@@ -54840,8 +65961,62 @@ export type SeoInformation = IContent & {
   Title?: Maybe<Scalars['String']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type SeoInformationAutocomplete = {
+  __typename?: 'SeoInformationAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type SeoInformationAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SeoInformationAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SeoInformationAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SeoInformationAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SeoInformationAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SeoInformationAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type SeoInformationFacet = {
@@ -55016,6 +66191,7 @@ export type SeoInformationOrderByInput = {
 
 export type SeoInformationOutput = {
   __typename?: 'SeoInformationOutput';
+  autocomplete?: Maybe<SeoInformationAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<SeoInformationFacet>;
   items?: Maybe<Array<Maybe<SeoInformation>>>;
@@ -55110,8 +66286,115 @@ export type SharedCartPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type SharedCartPageAutocomplete = {
+  __typename?: 'SharedCartPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type SharedCartPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SharedCartPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SharedCartPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SharedCartPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SharedCartPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SharedCartPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SharedCartPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SharedCartPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SharedCartPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SharedCartPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SharedCartPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SharedCartPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SharedCartPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type SharedCartPageFacet = {
@@ -55496,6 +66779,7 @@ export type SharedCartPageOrderByInput = {
 
 export type SharedCartPageOutput = {
   __typename?: 'SharedCartPageOutput';
+  autocomplete?: Maybe<SharedCartPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<SharedCartPageFacet>;
   items?: Maybe<Array<Maybe<SharedCartPage>>>;
@@ -55587,8 +66871,62 @@ export type ShippingDimensions = IContent & {
   Url?: Maybe<Scalars['String']>;
   Width?: Maybe<Scalars['Float']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type ShippingDimensionsAutocomplete = {
+  __typename?: 'ShippingDimensionsAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type ShippingDimensionsAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ShippingDimensionsAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ShippingDimensionsAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ShippingDimensionsAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ShippingDimensionsAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ShippingDimensionsAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type ShippingDimensionsFacet = {
@@ -55754,6 +67092,7 @@ export type ShippingDimensionsOrderByInput = {
 
 export type ShippingDimensionsOutput = {
   __typename?: 'ShippingDimensionsOutput';
+  autocomplete?: Maybe<ShippingDimensionsAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<ShippingDimensionsFacet>;
   items?: Maybe<Array<Maybe<ShippingDimensions>>>;
@@ -55829,8 +67168,62 @@ export type SingleImage = IContent & {
   Url?: Maybe<Scalars['String']>;
   Width?: Maybe<Scalars['Int']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type SingleImageAutocomplete = {
+  __typename?: 'SingleImageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type SingleImageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SingleImageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SingleImageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SingleImageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SingleImageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SingleImageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type SingleImageFacet = {
@@ -56071,6 +67464,7 @@ export type SingleImageOrderByInput = {
 
 export type SingleImageOutput = {
   __typename?: 'SingleImageOutput';
+  autocomplete?: Maybe<SingleImageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<SingleImageFacet>;
   items?: Maybe<Array<Maybe<SingleImage>>>;
@@ -56133,8 +67527,46 @@ export type SiteDefinition = {
   Name?: Maybe<Scalars['String']>;
   Status?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type SiteDefinitionAutocomplete = {
+  __typename?: 'SiteDefinitionAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentRoots?: Maybe<ContentRootsModelAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  EditLocation?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Hosts?: Maybe<HostDefinitionModelAutocomplete>;
+  Id?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Languages?: Maybe<SiteDefinitionLanguageModelAutocomplete>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type SiteDefinitionAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SiteDefinitionAutocompleteEditLocationArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SiteDefinitionAutocompleteIdArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SiteDefinitionAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type SiteDefinitionFacet = {
@@ -56197,6 +67629,38 @@ export type SiteDefinitionLanguageModel = {
   Name?: Maybe<Scalars['String']>;
   Url?: Maybe<Scalars['String']>;
   UrlSegment?: Maybe<Scalars['String']>;
+};
+
+export type SiteDefinitionLanguageModelAutocomplete = {
+  __typename?: 'SiteDefinitionLanguageModelAutocomplete';
+  DisplayName?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Name?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+  UrlSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type SiteDefinitionLanguageModelAutocompleteDisplayNameArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SiteDefinitionLanguageModelAutocompleteNameArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SiteDefinitionLanguageModelAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SiteDefinitionLanguageModelAutocompleteUrlSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type SiteDefinitionLanguageModelFacet = {
@@ -56279,6 +67743,7 @@ export type SiteDefinitionOrderByInput = {
 
 export type SiteDefinitionOutput = {
   __typename?: 'SiteDefinitionOutput';
+  autocomplete?: Maybe<SiteDefinitionAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<SiteDefinitionFacet>;
   items?: Maybe<Array<Maybe<SiteDefinition>>>;
@@ -56334,8 +67799,70 @@ export type StandardFile = IContent & {
   Thumbnail?: Maybe<BlobModel>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type StandardFileAutocomplete = {
+  __typename?: 'StandardFileAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  MimeType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Thumbnail?: Maybe<BlobModelAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type StandardFileAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StandardFileAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StandardFileAutocompleteMimeTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StandardFileAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StandardFileAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StandardFileAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StandardFileAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type StandardFileFacet = {
@@ -56512,6 +68039,7 @@ export type StandardFileOrderByInput = {
 
 export type StandardFileOutput = {
   __typename?: 'StandardFileOutput';
+  autocomplete?: Maybe<StandardFileAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<StandardFileFacet>;
   items?: Maybe<Array<Maybe<StandardFile>>>;
@@ -56614,8 +68142,138 @@ export type StandardPage = IContent & {
   TopPaddingMode?: Maybe<Scalars['String']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type StandardPageAutocomplete = {
+  __typename?: 'StandardPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  BackgroundColor?: Maybe<Array<Maybe<Scalars['String']>>>;
+  BackgroundImage?: Maybe<ContentModelReferenceAutocomplete>;
+  BackgroundVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  TitleColor?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TopPaddingMode?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type StandardPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StandardPageAutocompleteBackgroundColorArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StandardPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StandardPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StandardPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StandardPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StandardPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StandardPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StandardPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StandardPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StandardPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StandardPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StandardPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StandardPageAutocompleteTitleColorArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StandardPageAutocompleteTopPaddingModeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StandardPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type StandardPageFacet = {
@@ -57041,6 +68699,7 @@ export type StandardPageOrderByInput = {
 
 export type StandardPageOutput = {
   __typename?: 'StandardPageOutput';
+  autocomplete?: Maybe<StandardPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<StandardPageFacet>;
   items?: Maybe<Array<Maybe<StandardPage>>>;
@@ -57166,8 +68825,115 @@ export type StorePage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type StorePageAutocomplete = {
+  __typename?: 'StorePageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type StorePageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StorePageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StorePageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StorePageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StorePageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StorePageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StorePageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StorePageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StorePageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StorePageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StorePageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StorePageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StorePageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type StorePageFacet = {
@@ -57552,6 +69318,7 @@ export type StorePageOrderByInput = {
 
 export type StorePageOutput = {
   __typename?: 'StorePageOutput';
+  autocomplete?: Maybe<StorePageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<StorePageFacet>;
   items?: Maybe<Array<Maybe<StorePage>>>;
@@ -57651,8 +69418,62 @@ export type StringFilterBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type StringFilterBlockAutocomplete = {
+  __typename?: 'StringFilterBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type StringFilterBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StringFilterBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StringFilterBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StringFilterBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StringFilterBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type StringFilterBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type StringFilterBlockFacet = {
@@ -57817,6 +69638,7 @@ export type StringFilterBlockOrderByInput = {
 
 export type StringFilterBlockOutput = {
   __typename?: 'StringFilterBlockOutput';
+  autocomplete?: Maybe<StringFilterBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<StringFilterBlockFacet>;
   items?: Maybe<Array<Maybe<StringFilterBlock>>>;
@@ -57933,8 +69755,115 @@ export type SubOrganizationPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type SubOrganizationPageAutocomplete = {
+  __typename?: 'SubOrganizationPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type SubOrganizationPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubOrganizationPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubOrganizationPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubOrganizationPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubOrganizationPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubOrganizationPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubOrganizationPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubOrganizationPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubOrganizationPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubOrganizationPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubOrganizationPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubOrganizationPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubOrganizationPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type SubOrganizationPageFacet = {
@@ -58319,6 +70248,7 @@ export type SubOrganizationPageOrderByInput = {
 
 export type SubOrganizationPageOutput = {
   __typename?: 'SubOrganizationPageOutput';
+  autocomplete?: Maybe<SubOrganizationPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<SubOrganizationPageFacet>;
   items?: Maybe<Array<Maybe<SubOrganizationPage>>>;
@@ -58414,8 +70344,76 @@ export type SubmitButtonElementBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type SubmitButtonElementBlockAutocomplete = {
+  __typename?: 'SubmitButtonElementBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Image?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RedirectToPage?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type SubmitButtonElementBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubmitButtonElementBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubmitButtonElementBlockAutocompleteImageArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubmitButtonElementBlockAutocompleteRedirectToPageArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubmitButtonElementBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubmitButtonElementBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubmitButtonElementBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubmitButtonElementBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type SubmitButtonElementBlockFacet = {
@@ -58627,6 +70625,7 @@ export type SubmitButtonElementBlockOrderByInput = {
 
 export type SubmitButtonElementBlockOutput = {
   __typename?: 'SubmitButtonElementBlockOutput';
+  autocomplete?: Maybe<SubmitButtonElementBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<SubmitButtonElementBlockFacet>;
   items?: Maybe<Array<Maybe<SubmitButtonElementBlock>>>;
@@ -58703,8 +70702,63 @@ export type SubscriptionBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type SubscriptionBlockAutocomplete = {
+  __typename?: 'SubscriptionBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type SubscriptionBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type SubscriptionBlockFacet = {
@@ -58908,6 +70962,7 @@ export type SubscriptionBlockOrderByInput = {
 
 export type SubscriptionBlockOutput = {
   __typename?: 'SubscriptionBlockOutput';
+  autocomplete?: Maybe<SubscriptionBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<SubscriptionBlockFacet>;
   items?: Maybe<Array<Maybe<SubscriptionBlock>>>;
@@ -59006,8 +71061,115 @@ export type SubscriptionDetailPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type SubscriptionDetailPageAutocomplete = {
+  __typename?: 'SubscriptionDetailPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type SubscriptionDetailPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionDetailPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionDetailPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionDetailPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionDetailPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionDetailPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionDetailPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionDetailPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionDetailPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionDetailPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionDetailPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionDetailPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionDetailPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type SubscriptionDetailPageFacet = {
@@ -59392,6 +71554,7 @@ export type SubscriptionDetailPageOrderByInput = {
 
 export type SubscriptionDetailPageOutput = {
   __typename?: 'SubscriptionDetailPageOutput';
+  autocomplete?: Maybe<SubscriptionDetailPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<SubscriptionDetailPageFacet>;
   items?: Maybe<Array<Maybe<SubscriptionDetailPage>>>;
@@ -59511,8 +71674,115 @@ export type SubscriptionHistoryPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type SubscriptionHistoryPageAutocomplete = {
+  __typename?: 'SubscriptionHistoryPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type SubscriptionHistoryPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionHistoryPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionHistoryPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionHistoryPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionHistoryPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionHistoryPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionHistoryPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionHistoryPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionHistoryPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionHistoryPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionHistoryPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionHistoryPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type SubscriptionHistoryPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type SubscriptionHistoryPageFacet = {
@@ -59897,6 +72167,7 @@ export type SubscriptionHistoryPageOrderByInput = {
 
 export type SubscriptionHistoryPageOutput = {
   __typename?: 'SubscriptionHistoryPageOutput';
+  autocomplete?: Maybe<SubscriptionHistoryPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<SubscriptionHistoryPageFacet>;
   items?: Maybe<Array<Maybe<SubscriptionHistoryPage>>>;
@@ -60027,8 +72298,115 @@ export type TagPage = IContent & {
   TopContentArea?: Maybe<Array<Maybe<ContentAreaItemModelSearch>>>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type TagPageAutocomplete = {
+  __typename?: 'TagPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type TagPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TagPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TagPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TagPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TagPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TagPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TagPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TagPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TagPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TagPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TagPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TagPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TagPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type TagPageFacet = {
@@ -60429,6 +72807,7 @@ export type TagPageOrderByInput = {
 
 export type TagPageOutput = {
   __typename?: 'TagPageOutput';
+  autocomplete?: Maybe<TagPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<TagPageFacet>;
   items?: Maybe<Array<Maybe<TagPage>>>;
@@ -60547,8 +72926,73 @@ export type TeaserBlock = IContent & {
   TextColor?: Maybe<Scalars['String']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type TeaserBlockAutocomplete = {
+  __typename?: 'TeaserBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Image?: Maybe<ContentModelReferenceAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Link?: Maybe<ContentModelReferenceAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  SecondImage?: Maybe<ContentModelReferenceAutocomplete>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type TeaserBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TeaserBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TeaserBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TeaserBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TeaserBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TeaserBlockAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TeaserBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type TeaserBlockFacet = {
@@ -60883,6 +73327,7 @@ export type TeaserBlockOrderByInput = {
 
 export type TeaserBlockOutput = {
   __typename?: 'TeaserBlockOutput';
+  autocomplete?: Maybe<TeaserBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<TeaserBlockFacet>;
   items?: Maybe<Array<Maybe<TeaserBlock>>>;
@@ -60975,8 +73420,63 @@ export type TextBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type TextBlockAutocomplete = {
+  __typename?: 'TextBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type TextBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TextBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TextBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TextBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TextBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TextBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type TextBlockFacet = {
@@ -61170,6 +73670,7 @@ export type TextBlockOrderByInput = {
 
 export type TextBlockOutput = {
   __typename?: 'TextBlockOutput';
+  autocomplete?: Maybe<TextBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<TextBlockFacet>;
   items?: Maybe<Array<Maybe<TextBlock>>>;
@@ -61243,8 +73744,62 @@ export type TextareaElementBlock = IContent & {
   Url?: Maybe<Scalars['String']>;
   Validators?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type TextareaElementBlockAutocomplete = {
+  __typename?: 'TextareaElementBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type TextareaElementBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TextareaElementBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TextareaElementBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TextareaElementBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TextareaElementBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TextareaElementBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type TextareaElementBlockFacet = {
@@ -61453,6 +74008,7 @@ export type TextareaElementBlockOrderByInput = {
 
 export type TextareaElementBlockOutput = {
   __typename?: 'TextareaElementBlockOutput';
+  autocomplete?: Maybe<TextareaElementBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<TextareaElementBlockFacet>;
   items?: Maybe<Array<Maybe<TextareaElementBlock>>>;
@@ -61528,8 +74084,62 @@ export type TextboxElementBlock = IContent & {
   Url?: Maybe<Scalars['String']>;
   Validators?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type TextboxElementBlockAutocomplete = {
+  __typename?: 'TextboxElementBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type TextboxElementBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TextboxElementBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TextboxElementBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TextboxElementBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TextboxElementBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TextboxElementBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type TextboxElementBlockFacet = {
@@ -61748,6 +74358,7 @@ export type TextboxElementBlockOrderByInput = {
 
 export type TextboxElementBlockOutput = {
   __typename?: 'TextboxElementBlockOutput';
+  autocomplete?: Maybe<TextboxElementBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<TextboxElementBlockFacet>;
   items?: Maybe<Array<Maybe<TextboxElementBlock>>>;
@@ -61853,8 +74464,115 @@ export type ThreeColumnLandingPage = IContent & {
   TopContentArea?: Maybe<Array<Maybe<ContentAreaItemModelSearch>>>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type ThreeColumnLandingPageAutocomplete = {
+  __typename?: 'ThreeColumnLandingPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type ThreeColumnLandingPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ThreeColumnLandingPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ThreeColumnLandingPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ThreeColumnLandingPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ThreeColumnLandingPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ThreeColumnLandingPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ThreeColumnLandingPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ThreeColumnLandingPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ThreeColumnLandingPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ThreeColumnLandingPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ThreeColumnLandingPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ThreeColumnLandingPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type ThreeColumnLandingPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type ThreeColumnLandingPageFacet = {
@@ -62266,6 +74984,7 @@ export type ThreeColumnLandingPageOrderByInput = {
 
 export type ThreeColumnLandingPageOutput = {
   __typename?: 'ThreeColumnLandingPageOutput';
+  autocomplete?: Maybe<ThreeColumnLandingPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<ThreeColumnLandingPageFacet>;
   items?: Maybe<Array<Maybe<ThreeColumnLandingPage>>>;
@@ -62361,7 +75080,9 @@ export type TinyMceAdaptiveImage = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
 };
 
@@ -62370,6 +75091,13 @@ export type TinyMceAdaptiveImageAdaptiveImage = {
   Large?: Maybe<TinyMceAdaptiveImageAdaptiveImageSingleImage>;
   Medium?: Maybe<TinyMceAdaptiveImageAdaptiveImageSingleImage>;
   Small?: Maybe<TinyMceAdaptiveImageAdaptiveImageSingleImage>;
+};
+
+export type TinyMceAdaptiveImageAdaptiveImageAutocomplete = {
+  __typename?: 'TinyMceAdaptiveImageAdaptiveImageAutocomplete';
+  Large?: Maybe<TinyMceAdaptiveImageAdaptiveImageSingleImageAutocomplete>;
+  Medium?: Maybe<TinyMceAdaptiveImageAdaptiveImageSingleImageAutocomplete>;
+  Small?: Maybe<TinyMceAdaptiveImageAdaptiveImageSingleImageAutocomplete>;
 };
 
 export type TinyMceAdaptiveImageAdaptiveImageFacet = {
@@ -62399,6 +75127,38 @@ export type TinyMceAdaptiveImageAdaptiveImageSingleImage = {
   Right?: Maybe<Scalars['Float']>;
   Top?: Maybe<Scalars['Float']>;
   Width?: Maybe<Scalars['Int']>;
+};
+
+export type TinyMceAdaptiveImageAdaptiveImageSingleImageAutocomplete = {
+  __typename?: 'TinyMceAdaptiveImageAdaptiveImageSingleImageAutocomplete';
+  AlternateText?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Filename?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Id?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Provider?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type TinyMceAdaptiveImageAdaptiveImageSingleImageAutocompleteAlternateTextArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TinyMceAdaptiveImageAdaptiveImageSingleImageAutocompleteFilenameArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TinyMceAdaptiveImageAdaptiveImageSingleImageAutocompleteIdArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TinyMceAdaptiveImageAdaptiveImageSingleImageAutocompleteProviderArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type TinyMceAdaptiveImageAdaptiveImageSingleImageFacet = {
@@ -62523,6 +75283,59 @@ export type TinyMceAdaptiveImageAdaptiveImageWhereInput = {
   Large?: InputMaybe<TinyMceAdaptiveImageAdaptiveImageSingleImageWhereInput>;
   Medium?: InputMaybe<TinyMceAdaptiveImageAdaptiveImageSingleImageWhereInput>;
   Small?: InputMaybe<TinyMceAdaptiveImageAdaptiveImageSingleImageWhereInput>;
+};
+
+export type TinyMceAdaptiveImageAutocomplete = {
+  __typename?: 'TinyMceAdaptiveImageAutocomplete';
+  AdaptiveImage?: Maybe<TinyMceAdaptiveImageAdaptiveImageAutocomplete>;
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type TinyMceAdaptiveImageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TinyMceAdaptiveImageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TinyMceAdaptiveImageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TinyMceAdaptiveImageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TinyMceAdaptiveImageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TinyMceAdaptiveImageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type TinyMceAdaptiveImageFacet = {
@@ -62669,6 +75482,7 @@ export type TinyMceAdaptiveImageOrderByInput = {
 
 export type TinyMceAdaptiveImageOutput = {
   __typename?: 'TinyMceAdaptiveImageOutput';
+  autocomplete?: Maybe<TinyMceAdaptiveImageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<TinyMceAdaptiveImageFacet>;
   items?: Maybe<Array<Maybe<TinyMceAdaptiveImage>>>;
@@ -62739,8 +75553,63 @@ export type TwitterBlock = IContent & {
   StopPublish?: Maybe<Scalars['Date']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type TwitterBlockAutocomplete = {
+  __typename?: 'TwitterBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type TwitterBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TwitterBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TwitterBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TwitterBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TwitterBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TwitterBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type TwitterBlockFacet = {
@@ -62941,6 +75810,7 @@ export type TwitterBlockOrderByInput = {
 
 export type TwitterBlockOutput = {
   __typename?: 'TwitterBlockOutput';
+  autocomplete?: Maybe<TwitterBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<TwitterBlockFacet>;
   items?: Maybe<Array<Maybe<TwitterBlock>>>;
@@ -63043,8 +75913,115 @@ export type TwoColumnLandingPage = IContent & {
   TopContentArea?: Maybe<Array<Maybe<ContentAreaItemModelSearch>>>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type TwoColumnLandingPageAutocomplete = {
+  __typename?: 'TwoColumnLandingPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type TwoColumnLandingPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TwoColumnLandingPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TwoColumnLandingPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TwoColumnLandingPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TwoColumnLandingPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TwoColumnLandingPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TwoColumnLandingPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TwoColumnLandingPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TwoColumnLandingPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TwoColumnLandingPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TwoColumnLandingPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TwoColumnLandingPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type TwoColumnLandingPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type TwoColumnLandingPageFacet = {
@@ -63447,6 +76424,7 @@ export type TwoColumnLandingPageOrderByInput = {
 
 export type TwoColumnLandingPageOutput = {
   __typename?: 'TwoColumnLandingPageOutput';
+  autocomplete?: Maybe<TwoColumnLandingPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<TwoColumnLandingPageFacet>;
   items?: Maybe<Array<Maybe<TwoColumnLandingPage>>>;
@@ -63546,8 +76524,62 @@ export type UrlElementBlock = IContent & {
   Url?: Maybe<Scalars['String']>;
   Validators?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type UrlElementBlockAutocomplete = {
+  __typename?: 'UrlElementBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type UrlElementBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type UrlElementBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type UrlElementBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type UrlElementBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type UrlElementBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type UrlElementBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type UrlElementBlockFacet = {
@@ -63759,6 +76791,7 @@ export type UrlElementBlockOrderByInput = {
 
 export type UrlElementBlockOutput = {
   __typename?: 'UrlElementBlockOutput';
+  autocomplete?: Maybe<UrlElementBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<UrlElementBlockFacet>;
   items?: Maybe<Array<Maybe<UrlElementBlock>>>;
@@ -63857,8 +76890,115 @@ export type UsersPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type UsersPageAutocomplete = {
+  __typename?: 'UsersPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type UsersPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type UsersPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type UsersPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type UsersPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type UsersPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type UsersPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type UsersPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type UsersPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type UsersPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type UsersPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type UsersPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type UsersPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type UsersPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type UsersPageFacet = {
@@ -64243,6 +77383,7 @@ export type UsersPageOrderByInput = {
 
 export type UsersPageOutput = {
   __typename?: 'UsersPageOutput';
+  autocomplete?: Maybe<UsersPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<UsersPageFacet>;
   items?: Maybe<Array<Maybe<UsersPage>>>;
@@ -64346,13 +77487,20 @@ export type VariationContent = IContent & {
   Url?: Maybe<Scalars['String']>;
   Weight?: Maybe<Scalars['Float']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
 };
 
 export type VariationContentAssociations = {
   __typename?: 'VariationContentAssociations';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type VariationContentAssociationsAutocomplete = {
+  __typename?: 'VariationContentAssociationsAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type VariationContentAssociationsFacet = {
@@ -64368,9 +77516,78 @@ export type VariationContentAssociationsWhereInput = {
   ContentLink?: InputMaybe<ContentModelReferenceWhereInput>;
 };
 
+export type VariationContentAutocomplete = {
+  __typename?: 'VariationContentAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Associations?: Maybe<VariationContentAssociationsAutocomplete>;
+  Categories?: Maybe<VariationContentCategoriesAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  InventoryReference?: Maybe<ContentModelReferenceAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentEntries?: Maybe<VariationContentRelationsAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  PriceReference?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  SeoInformation?: Maybe<VariationContentSeoInformationAutocomplete>;
+  SeoUri?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type VariationContentAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VariationContentAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VariationContentAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VariationContentAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VariationContentAutocompleteSeoUriArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VariationContentAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VariationContentAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
 export type VariationContentCategories = {
   __typename?: 'VariationContentCategories';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type VariationContentCategoriesAutocomplete = {
+  __typename?: 'VariationContentCategoriesAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type VariationContentCategoriesFacet = {
@@ -64615,6 +77832,7 @@ export type VariationContentOrderByInput = {
 
 export type VariationContentOutput = {
   __typename?: 'VariationContentOutput';
+  autocomplete?: Maybe<VariationContentAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<VariationContentFacet>;
   items?: Maybe<Array<Maybe<VariationContent>>>;
@@ -64629,6 +77847,11 @@ export type VariationContentOutputTotalArgs = {
 export type VariationContentRelations = {
   __typename?: 'VariationContentRelations';
   ContentLink?: Maybe<ContentModelReference>;
+};
+
+export type VariationContentRelationsAutocomplete = {
+  __typename?: 'VariationContentRelationsAutocomplete';
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
 };
 
 export type VariationContentRelationsFacet = {
@@ -64649,6 +77872,31 @@ export type VariationContentSeoInformation = {
   Description?: Maybe<Scalars['String']>;
   Keywords?: Maybe<Scalars['String']>;
   Title?: Maybe<Scalars['String']>;
+};
+
+export type VariationContentSeoInformationAutocomplete = {
+  __typename?: 'VariationContentSeoInformationAutocomplete';
+  Description?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Keywords?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Title?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type VariationContentSeoInformationAutocompleteDescriptionArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VariationContentSeoInformationAutocompleteKeywordsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VariationContentSeoInformationAutocompleteTitleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type VariationContentSeoInformationFacet = {
@@ -64831,8 +78079,100 @@ export type VectorImageMediaData = IContent & {
   Title?: Maybe<Scalars['String']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type VectorImageMediaDataAutocomplete = {
+  __typename?: 'VectorImageMediaDataAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CreditsLink?: Maybe<Array<Maybe<Scalars['String']>>>;
+  DominantColors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  ImageCategories?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  LargeThumbnail?: Maybe<BlobModelAutocomplete>;
+  Link?: Maybe<ContentModelReferenceAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  MimeType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Tags?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Thumbnail?: Maybe<BlobModelAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type VectorImageMediaDataAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VectorImageMediaDataAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VectorImageMediaDataAutocompleteCreditsLinkArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VectorImageMediaDataAutocompleteDominantColorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VectorImageMediaDataAutocompleteImageCategoriesArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VectorImageMediaDataAutocompleteMimeTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VectorImageMediaDataAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VectorImageMediaDataAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VectorImageMediaDataAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VectorImageMediaDataAutocompleteTagsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VectorImageMediaDataAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type VectorImageMediaDataFacet = {
@@ -65231,6 +78571,7 @@ export type VectorImageMediaDataOrderByInput = {
 
 export type VectorImageMediaDataOutput = {
   __typename?: 'VectorImageMediaDataOutput';
+  autocomplete?: Maybe<VectorImageMediaDataAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<VectorImageMediaDataFacet>;
   items?: Maybe<Array<Maybe<VectorImageMediaData>>>;
@@ -65328,8 +78669,64 @@ export type VideoBlock = IContent & {
   Url?: Maybe<Scalars['String']>;
   Video?: Maybe<ContentModelReference>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type VideoBlockAutocomplete = {
+  __typename?: 'VideoBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Video?: Maybe<ContentModelReferenceAutocomplete>;
+};
+
+
+export type VideoBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VideoBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VideoBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VideoBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VideoBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VideoBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type VideoBlockFacet = {
@@ -65515,6 +78912,7 @@ export type VideoBlockOrderByInput = {
 
 export type VideoBlockOutput = {
   __typename?: 'VideoBlockOutput';
+  autocomplete?: Maybe<VideoBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<VideoBlockFacet>;
   items?: Maybe<Array<Maybe<VideoBlock>>>;
@@ -65589,8 +78987,71 @@ export type VideoFile = IContent & {
   Thumbnail?: Maybe<BlobModel>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type VideoFileAutocomplete = {
+  __typename?: 'VideoFileAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  MimeType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  PreviewImage?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Thumbnail?: Maybe<BlobModelAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type VideoFileAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VideoFileAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VideoFileAutocompleteMimeTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VideoFileAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VideoFileAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VideoFileAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VideoFileAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type VideoFileFacet = {
@@ -65789,6 +79250,7 @@ export type VideoFileOrderByInput = {
 
 export type VideoFileOutput = {
   __typename?: 'VideoFileOutput';
+  autocomplete?: Maybe<VideoFileAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<VideoFileFacet>;
   items?: Maybe<Array<Maybe<VideoFile>>>;
@@ -65869,8 +79331,71 @@ export type VimeoBlock = IContent & {
   /** URL link to Vimeo video */
   VimeoVideoLink?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type VimeoBlockAutocomplete = {
+  __typename?: 'VimeoBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CoverImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+  VimeoVideoLink?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type VimeoBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VimeoBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VimeoBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VimeoBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VimeoBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VimeoBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VimeoBlockAutocompleteVimeoVideoLinkArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type VimeoBlockFacet = {
@@ -66086,6 +79611,7 @@ export type VimeoBlockOrderByInput = {
 
 export type VimeoBlockOutput = {
   __typename?: 'VimeoBlockOutput';
+  autocomplete?: Maybe<VimeoBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<VimeoBlockFacet>;
   items?: Maybe<Array<Maybe<VimeoBlock>>>;
@@ -66156,8 +79682,62 @@ export type VisitorDataHiddenElementBlock = IContent & {
   Url?: Maybe<Scalars['String']>;
   VisitorDataSources?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type VisitorDataHiddenElementBlockAutocomplete = {
+  __typename?: 'VisitorDataHiddenElementBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type VisitorDataHiddenElementBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VisitorDataHiddenElementBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VisitorDataHiddenElementBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VisitorDataHiddenElementBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VisitorDataHiddenElementBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type VisitorDataHiddenElementBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type VisitorDataHiddenElementBlockFacet = {
@@ -66312,6 +79892,7 @@ export type VisitorDataHiddenElementBlockOrderByInput = {
 
 export type VisitorDataHiddenElementBlockOutput = {
   __typename?: 'VisitorDataHiddenElementBlockOutput';
+  autocomplete?: Maybe<VisitorDataHiddenElementBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<VisitorDataHiddenElementBlockFacet>;
   items?: Maybe<Array<Maybe<VisitorDataHiddenElementBlock>>>;
@@ -66405,8 +79986,100 @@ export type WebImageMediaData = IContent & {
   Title?: Maybe<Scalars['String']>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type WebImageMediaDataAutocomplete = {
+  __typename?: 'WebImageMediaDataAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CreditsLink?: Maybe<Array<Maybe<Scalars['String']>>>;
+  DominantColors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  ImageCategories?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  LargeThumbnail?: Maybe<BlobModelAutocomplete>;
+  Link?: Maybe<ContentModelReferenceAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  MimeType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Tags?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Thumbnail?: Maybe<BlobModelAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type WebImageMediaDataAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type WebImageMediaDataAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type WebImageMediaDataAutocompleteCreditsLinkArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type WebImageMediaDataAutocompleteDominantColorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type WebImageMediaDataAutocompleteImageCategoriesArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type WebImageMediaDataAutocompleteMimeTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type WebImageMediaDataAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type WebImageMediaDataAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type WebImageMediaDataAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type WebImageMediaDataAutocompleteTagsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type WebImageMediaDataAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type WebImageMediaDataFacet = {
@@ -66805,6 +80478,7 @@ export type WebImageMediaDataOrderByInput = {
 
 export type WebImageMediaDataOutput = {
   __typename?: 'WebImageMediaDataOutput';
+  autocomplete?: Maybe<WebImageMediaDataAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<WebImageMediaDataFacet>;
   items?: Maybe<Array<Maybe<WebImageMediaData>>>;
@@ -66898,8 +80572,62 @@ export type WidgetBlock = IContent & {
   Value?: Maybe<Scalars['String']>;
   WidgetType?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type WidgetBlockAutocomplete = {
+  __typename?: 'WidgetBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type WidgetBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type WidgetBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type WidgetBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type WidgetBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type WidgetBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type WidgetBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type WidgetBlockFacet = {
@@ -67071,6 +80799,7 @@ export type WidgetBlockOrderByInput = {
 
 export type WidgetBlockOutput = {
   __typename?: 'WidgetBlockOutput';
+  autocomplete?: Maybe<WidgetBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<WidgetBlockFacet>;
   items?: Maybe<Array<Maybe<WidgetBlock>>>;
@@ -67165,8 +80894,115 @@ export type WishListPage = IContent & {
   TeaserVideo?: Maybe<ContentModelReference>;
   Url?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type WishListPageAutocomplete = {
+  __typename?: 'WishListPageAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Css?: Maybe<Array<Maybe<Scalars['String']>>>;
+  CssFiles?: Maybe<LinkItemNodeAutocomplete>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  Margin?: Maybe<Array<Maybe<Scalars['String']>>>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  Padding?: Maybe<Array<Maybe<Scalars['String']>>>;
+  PageImage?: Maybe<ContentModelReferenceAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserButtonStyle?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserColorTheme?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserRatio?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserTextAlignment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  TeaserVideo?: Maybe<ContentModelReferenceAutocomplete>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type WishListPageAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type WishListPageAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type WishListPageAutocompleteCssArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type WishListPageAutocompleteMarginArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type WishListPageAutocompletePaddingArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type WishListPageAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type WishListPageAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type WishListPageAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type WishListPageAutocompleteTeaserButtonStyleArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type WishListPageAutocompleteTeaserColorThemeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type WishListPageAutocompleteTeaserRatioArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type WishListPageAutocompleteTeaserTextAlignmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type WishListPageAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type WishListPageFacet = {
@@ -67551,6 +81387,7 @@ export type WishListPageOrderByInput = {
 
 export type WishListPageOutput = {
   __typename?: 'WishListPageOutput';
+  autocomplete?: Maybe<WishListPageAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<WishListPageFacet>;
   items?: Maybe<Array<Maybe<WishListPage>>>;
@@ -67651,8 +81488,63 @@ export type YouTubeBlock = IContent & {
   /** URL link to YouTube video */
   YouTubeLink?: Maybe<Scalars['String']>;
   _children?: Maybe<QueryRef>;
+  _deleted?: Maybe<Scalars['Bool']>;
   _fulltext?: Maybe<Array<Maybe<Scalars['String']>>>;
+  _modified?: Maybe<Scalars['Date']>;
   _score?: Maybe<Scalars['Float']>;
+};
+
+export type YouTubeBlockAutocomplete = {
+  __typename?: 'YouTubeBlockAutocomplete';
+  Ancestors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Categories?: Maybe<ContentModelReferenceAutocomplete>;
+  Category?: Maybe<CategoryModelAutocomplete>;
+  ContentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  ContentType?: Maybe<Array<Maybe<Scalars['String']>>>;
+  ExistingLanguages?: Maybe<ContentLanguageModelAutocomplete>;
+  Language?: Maybe<ContentLanguageModelAutocomplete>;
+  MasterLanguage?: Maybe<ContentLanguageModelAutocomplete>;
+  ParentLink?: Maybe<ContentModelReferenceAutocomplete>;
+  RelativePath?: Maybe<Array<Maybe<Scalars['String']>>>;
+  RouteSegment?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Status?: Maybe<Array<Maybe<Scalars['String']>>>;
+  Url?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+
+export type YouTubeBlockAutocompleteAncestorsArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type YouTubeBlockAutocompleteContentTypeArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type YouTubeBlockAutocompleteRelativePathArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type YouTubeBlockAutocompleteRouteSegmentArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type YouTubeBlockAutocompleteStatusArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
+};
+
+
+export type YouTubeBlockAutocompleteUrlArgs = {
+  limit?: Scalars['Int'];
+  value: Scalars['String'];
 };
 
 export type YouTubeBlockFacet = {
@@ -67866,6 +81758,7 @@ export type YouTubeBlockOrderByInput = {
 
 export type YouTubeBlockOutput = {
   __typename?: 'YouTubeBlockOutput';
+  autocomplete?: Maybe<YouTubeBlockAutocomplete>;
   cursor?: Maybe<Scalars['String']>;
   facets?: Maybe<YouTubeBlockFacet>;
   items?: Maybe<Array<Maybe<YouTubeBlock>>>;
@@ -67934,7 +81827,7 @@ export type GetContentQueryVariables = Exact<{
 }>;
 
 
-export type GetContentQuery = { __typename?: 'Query', Content?: { __typename?: 'ContentOutput', items?: Array<{ __typename?: 'AdaptiveHeroBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'AdaptiveImage', _fulltext?: Array<string | null> | null } | { __typename?: 'AddressBookPage', _fulltext?: Array<string | null> | null } | { __typename?: 'AddressesElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'AssetsDownloadLinksBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'Associations', _fulltext?: Array<string | null> | null } | { __typename?: 'BlogCommentBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'BlogItemPage', _fulltext?: Array<string | null> | null } | { __typename?: 'BlogListPage', _fulltext?: Array<string | null> | null } | { __typename?: 'BookmarksPage', _fulltext?: Array<string | null> | null } | { __typename?: 'BootstrapCardBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'BreadcrumbBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'BudgetingPage', _fulltext?: Array<string | null> | null } | { __typename?: 'BundleContent', _fulltext?: Array<string | null> | null } | { __typename?: 'ButtonBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'CalendarBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'CalendarEventPage', _fulltext?: Array<string | null> | null } | { __typename?: 'CallToActionBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'CaptchaElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'CarouselBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'CarouselControls', _fulltext?: Array<string | null> | null } | { __typename?: 'CartPage', _fulltext?: Array<string | null> | null } | { __typename?: 'CatalogContent', _fulltext?: Array<string | null> | null } | { __typename?: 'Categories', _fulltext?: Array<string | null> | null } | { __typename?: 'CategoryBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'CheckoutPage', _fulltext?: Array<string | null> | null } | { __typename?: 'ChoiceElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'CodingFile', _fulltext?: Array<string | null> | null } | { __typename?: 'CollectionPage', _fulltext?: Array<string | null> | null } | { __typename?: 'CommentsBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'CommunityPage', _fulltext?: Array<string | null> | null } | { __typename?: 'ContainerBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'Content', _fulltext?: Array<string | null> | null } | { __typename?: 'CouponData', _fulltext?: Array<string | null> | null } | { __typename?: 'CreditCardPage', _fulltext?: Array<string | null> | null } | { __typename?: 'CustomViewConfigurationBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'DAMAsset', _fulltext?: Array<string | null> | null } | { __typename?: 'DAMImageAsset', _fulltext?: Array<string | null> | null } | { __typename?: 'DAMVideoAsset', _fulltext?: Array<string | null> | null } | { __typename?: 'DateTimeElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'DateTimeRangeElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'DiscountItems', _fulltext?: Array<string | null> | null } | { __typename?: 'DynamicProduct', _fulltext?: Array<string | null> | null } | { __typename?: 'DynamicVariant', _fulltext?: Array<string | null> | null } | { __typename?: 'ElevatedRoleBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ExistsFilterBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'FacebookBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'FeedBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'FileUploadElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'FilterActivitiesBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'FilterContinentsBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'FilterDistancesBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'FilterTemperaturesBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'FixedPricePurchaseQuantity', _fulltext?: Array<string | null> | null } | { __typename?: 'FolderPage', _fulltext?: Array<string | null> | null } | { __typename?: 'FormContainerBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'FormStepBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'FoundationPdfFile', _fulltext?: Array<string | null> | null } | { __typename?: 'GenericBundle', _fulltext?: Array<string | null> | null } | { __typename?: 'GenericNode', _fulltext?: Array<string | null> | null } | { __typename?: 'GenericPackage', _fulltext?: Array<string | null> | null } | { __typename?: 'GenericProduct', _fulltext?: Array<string | null> | null } | { __typename?: 'GenericVariant', _fulltext?: Array<string | null> | null } | { __typename?: 'GiftCardPage', _fulltext?: Array<string | null> | null } | { __typename?: 'GoogleMapsBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'GroupAdmissionBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'GroupCreationBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'HealthChatbotBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'HeroBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'HeroBlockCallout', _fulltext?: Array<string | null> | null } | { __typename?: 'HomePage', _fulltext?: Array<string | null> | null } | { __typename?: 'HtmlBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'IframeBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ImageChoiceElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ImageMediaData', _fulltext?: Array<string | null> | null } | { __typename?: 'JourneyContainerBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'LandingPage', _fulltext?: Array<string | null> | null } | { __typename?: 'LikeButtonBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'LocationItemPage', _fulltext?: Array<string | null> | null } | { __typename?: 'LocationListPage', _fulltext?: Array<string | null> | null } | { __typename?: 'MembershipAffiliationBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'MembershipDisplayBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'MenuItemBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ModalBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'MonetaryReward', _fulltext?: Array<string | null> | null } | { __typename?: 'NavigationBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'NewProductsPage', _fulltext?: Array<string | null> | null } | { __typename?: 'NodeContent', _fulltext?: Array<string | null> | null } | { __typename?: 'NumberElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'NumericFilterBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ODPEmailEventBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ODPEventTrackingBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ODPListConsentFormBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ODPListFormBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ODPSearchEventBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ODPUpdateProfileBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'OrderConfirmationMailPage', _fulltext?: Array<string | null> | null } | { __typename?: 'OrderConfirmationPage', _fulltext?: Array<string | null> | null } | { __typename?: 'OrderDetailsPage', _fulltext?: Array<string | null> | null } | { __typename?: 'OrderHistoryBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'OrderHistoryPage', _fulltext?: Array<string | null> | null } | { __typename?: 'OrderPadsPage', _fulltext?: Array<string | null> | null } | { __typename?: 'OrderSearchBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'OrdersPage', _fulltext?: Array<string | null> | null } | { __typename?: 'OrganizationPage', _fulltext?: Array<string | null> | null } | { __typename?: 'PackageContent', _fulltext?: Array<string | null> | null } | { __typename?: 'PageListBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ParagraphTextElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'PdfFile', _fulltext?: Array<string | null> | null } | { __typename?: 'PersonList', _fulltext?: Array<string | null> | null } | { __typename?: 'PersonPage', _fulltext?: Array<string | null> | null } | { __typename?: 'PredefinedHiddenElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ProductContent', _fulltext?: Array<string | null> | null } | { __typename?: 'ProductHeroBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ProductHeroBlockCallout', _fulltext?: Array<string | null> | null } | { __typename?: 'ProductHeroBlockImage', _fulltext?: Array<string | null> | null } | { __typename?: 'ProductSearchBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ProfilePage', _fulltext?: Array<string | null> | null } | { __typename?: 'PromotionSchedule', _fulltext?: Array<string | null> | null } | { __typename?: 'PurchaseAmount', _fulltext?: Array<string | null> | null } | { __typename?: 'PurchaseQuantity', _fulltext?: Array<string | null> | null } | { __typename?: 'QuickOrderBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'QuickOrderPage', _fulltext?: Array<string | null> | null } | { __typename?: 'RangeElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'RatingBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'RecaptchaElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'RedemptionLimitsData', _fulltext?: Array<string | null> | null } | { __typename?: 'Relations', _fulltext?: Array<string | null> | null } | { __typename?: 'ReportingMediaData', _fulltext?: Array<string | null> | null } | { __typename?: 'ResetButtonElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ResetPasswordMailPage', _fulltext?: Array<string | null> | null } | { __typename?: 'ResetPasswordPage', _fulltext?: Array<string | null> | null } | { __typename?: 'RssReaderBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'SalesPage', _fulltext?: Array<string | null> | null } | { __typename?: 'SearchResultPage', _fulltext?: Array<string | null> | null } | { __typename?: 'SelectionElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'SeoInformation', _fulltext?: Array<string | null> | null } | { __typename?: 'SharedCartPage', _fulltext?: Array<string | null> | null } | { __typename?: 'ShippingDimensions', _fulltext?: Array<string | null> | null } | { __typename?: 'SingleImage', _fulltext?: Array<string | null> | null } | { __typename?: 'StandardFile', _fulltext?: Array<string | null> | null } | { __typename?: 'StandardPage', _fulltext?: Array<string | null> | null } | { __typename?: 'StorePage', _fulltext?: Array<string | null> | null } | { __typename?: 'StringFilterBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'SubOrganizationPage', _fulltext?: Array<string | null> | null } | { __typename?: 'SubmitButtonElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'SubscriptionBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'SubscriptionDetailPage', _fulltext?: Array<string | null> | null } | { __typename?: 'SubscriptionHistoryPage', _fulltext?: Array<string | null> | null } | { __typename?: 'TagPage', _fulltext?: Array<string | null> | null } | { __typename?: 'TeaserBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'TextBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'TextareaElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'TextboxElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ThreeColumnLandingPage', _fulltext?: Array<string | null> | null } | { __typename?: 'TinyMceAdaptiveImage', _fulltext?: Array<string | null> | null } | { __typename?: 'TwitterBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'TwoColumnLandingPage', _fulltext?: Array<string | null> | null } | { __typename?: 'UrlElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'UsersPage', _fulltext?: Array<string | null> | null } | { __typename?: 'VariationContent', _fulltext?: Array<string | null> | null } | { __typename?: 'VectorImageMediaData', _fulltext?: Array<string | null> | null } | { __typename?: 'VideoBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'VideoFile', _fulltext?: Array<string | null> | null } | { __typename?: 'VimeoBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'VisitorDataHiddenElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'WebImageMediaData', _fulltext?: Array<string | null> | null } | { __typename?: 'WidgetBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'WishListPage', _fulltext?: Array<string | null> | null } | { __typename?: 'YouTubeBlock', _fulltext?: Array<string | null> | null } | null> | null } | null };
+export type GetContentQuery = { __typename?: 'Query', Content?: { __typename?: 'ContentOutput', items?: Array<{ __typename?: 'AdaptiveHeroBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'AdaptiveImage', _fulltext?: Array<string | null> | null } | { __typename?: 'AddressBookPage', _fulltext?: Array<string | null> | null } | { __typename?: 'AddressesElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'AssetsDownloadLinksBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'Associations', _fulltext?: Array<string | null> | null } | { __typename?: 'BlogCommentBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'BlogItemPage', _fulltext?: Array<string | null> | null } | { __typename?: 'BlogListPage', _fulltext?: Array<string | null> | null } | { __typename?: 'BookmarksPage', _fulltext?: Array<string | null> | null } | { __typename?: 'BootstrapCardBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'BreadcrumbBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'BudgetingPage', _fulltext?: Array<string | null> | null } | { __typename?: 'BundleContent', _fulltext?: Array<string | null> | null } | { __typename?: 'ButtonBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'CalendarBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'CalendarEventPage', _fulltext?: Array<string | null> | null } | { __typename?: 'CallToActionBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'CaptchaElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'CarouselBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'CarouselControls', _fulltext?: Array<string | null> | null } | { __typename?: 'CartPage', _fulltext?: Array<string | null> | null } | { __typename?: 'CatalogContent', _fulltext?: Array<string | null> | null } | { __typename?: 'Categories', _fulltext?: Array<string | null> | null } | { __typename?: 'CategoryBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'CheckoutPage', _fulltext?: Array<string | null> | null } | { __typename?: 'ChoiceElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'CodingFile', _fulltext?: Array<string | null> | null } | { __typename?: 'CollectionPage', _fulltext?: Array<string | null> | null } | { __typename?: 'CommentsBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'CommunityPage', _fulltext?: Array<string | null> | null } | { __typename?: 'ContainerBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'Content', _fulltext?: Array<string | null> | null } | { __typename?: 'CouponData', _fulltext?: Array<string | null> | null } | { __typename?: 'CreditCardPage', _fulltext?: Array<string | null> | null } | { __typename?: 'CustomViewConfigurationBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'DAMAsset', _fulltext?: Array<string | null> | null } | { __typename?: 'DAMImageAsset', _fulltext?: Array<string | null> | null } | { __typename?: 'DAMVideoAsset', _fulltext?: Array<string | null> | null } | { __typename?: 'DateTimeElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'DateTimeRangeElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'DiscountItems', _fulltext?: Array<string | null> | null } | { __typename?: 'DynamicProduct', _fulltext?: Array<string | null> | null } | { __typename?: 'DynamicVariant', _fulltext?: Array<string | null> | null } | { __typename?: 'ElevatedRoleBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ExistsFilterBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'FacebookBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'FeedBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'FileUploadElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'FilterActivitiesBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'FilterContinentsBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'FilterDistancesBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'FilterTemperaturesBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'FixedPricePurchaseQuantity', _fulltext?: Array<string | null> | null } | { __typename?: 'FolderPage', _fulltext?: Array<string | null> | null } | { __typename?: 'FormContainerBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'FormStepBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'FoundationPdfFile', _fulltext?: Array<string | null> | null } | { __typename?: 'GenericBundle', _fulltext?: Array<string | null> | null } | { __typename?: 'GenericNode', _fulltext?: Array<string | null> | null } | { __typename?: 'GenericPackage', _fulltext?: Array<string | null> | null } | { __typename?: 'GenericProduct', _fulltext?: Array<string | null> | null } | { __typename?: 'GenericVariant', _fulltext?: Array<string | null> | null } | { __typename?: 'GiftCardPage', _fulltext?: Array<string | null> | null } | { __typename?: 'GoogleMapsBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'GroupAdmissionBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'GroupCreationBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'HcaptchaElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'HealthChatbotBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'HeroBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'HeroBlockCallout', _fulltext?: Array<string | null> | null } | { __typename?: 'HomePage', _fulltext?: Array<string | null> | null } | { __typename?: 'HtmlBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'IframeBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ImageChoiceElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ImageMediaData', _fulltext?: Array<string | null> | null } | { __typename?: 'JourneyContainerBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'LandingPage', _fulltext?: Array<string | null> | null } | { __typename?: 'LikeButtonBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'LocationItemPage', _fulltext?: Array<string | null> | null } | { __typename?: 'LocationListPage', _fulltext?: Array<string | null> | null } | { __typename?: 'MembershipAffiliationBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'MembershipDisplayBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'MenuItemBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ModalBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'MonetaryReward', _fulltext?: Array<string | null> | null } | { __typename?: 'NavigationBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'NewProductsPage', _fulltext?: Array<string | null> | null } | { __typename?: 'NodeContent', _fulltext?: Array<string | null> | null } | { __typename?: 'NumberElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'NumericFilterBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ODPEmailEventBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ODPEventTrackingBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ODPListConsentFormBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ODPListFormBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ODPSearchEventBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ODPUpdateProfileBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'OrderConfirmationMailPage', _fulltext?: Array<string | null> | null } | { __typename?: 'OrderConfirmationPage', _fulltext?: Array<string | null> | null } | { __typename?: 'OrderDetailsPage', _fulltext?: Array<string | null> | null } | { __typename?: 'OrderHistoryBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'OrderHistoryPage', _fulltext?: Array<string | null> | null } | { __typename?: 'OrderPadsPage', _fulltext?: Array<string | null> | null } | { __typename?: 'OrderSearchBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'OrdersPage', _fulltext?: Array<string | null> | null } | { __typename?: 'OrganizationPage', _fulltext?: Array<string | null> | null } | { __typename?: 'PackageContent', _fulltext?: Array<string | null> | null } | { __typename?: 'PageListBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ParagraphTextElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'PdfFile', _fulltext?: Array<string | null> | null } | { __typename?: 'PersonList', _fulltext?: Array<string | null> | null } | { __typename?: 'PersonPage', _fulltext?: Array<string | null> | null } | { __typename?: 'PredefinedHiddenElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ProductContent', _fulltext?: Array<string | null> | null } | { __typename?: 'ProductHeroBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ProductHeroBlockCallout', _fulltext?: Array<string | null> | null } | { __typename?: 'ProductHeroBlockImage', _fulltext?: Array<string | null> | null } | { __typename?: 'ProductSearchBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ProfilePage', _fulltext?: Array<string | null> | null } | { __typename?: 'PromotionSchedule', _fulltext?: Array<string | null> | null } | { __typename?: 'PurchaseAmount', _fulltext?: Array<string | null> | null } | { __typename?: 'PurchaseQuantity', _fulltext?: Array<string | null> | null } | { __typename?: 'QuickOrderBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'QuickOrderPage', _fulltext?: Array<string | null> | null } | { __typename?: 'RangeElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'RatingBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'RecaptchaElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'RedemptionLimitsData', _fulltext?: Array<string | null> | null } | { __typename?: 'Relations', _fulltext?: Array<string | null> | null } | { __typename?: 'ReportingMediaData', _fulltext?: Array<string | null> | null } | { __typename?: 'ResetButtonElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ResetPasswordMailPage', _fulltext?: Array<string | null> | null } | { __typename?: 'ResetPasswordPage', _fulltext?: Array<string | null> | null } | { __typename?: 'RssReaderBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'SalesPage', _fulltext?: Array<string | null> | null } | { __typename?: 'SearchResultPage', _fulltext?: Array<string | null> | null } | { __typename?: 'SelectionElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'SeoInformation', _fulltext?: Array<string | null> | null } | { __typename?: 'SharedCartPage', _fulltext?: Array<string | null> | null } | { __typename?: 'ShippingDimensions', _fulltext?: Array<string | null> | null } | { __typename?: 'SingleImage', _fulltext?: Array<string | null> | null } | { __typename?: 'StandardFile', _fulltext?: Array<string | null> | null } | { __typename?: 'StandardPage', _fulltext?: Array<string | null> | null } | { __typename?: 'StorePage', _fulltext?: Array<string | null> | null } | { __typename?: 'StringFilterBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'SubOrganizationPage', _fulltext?: Array<string | null> | null } | { __typename?: 'SubmitButtonElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'SubscriptionBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'SubscriptionDetailPage', _fulltext?: Array<string | null> | null } | { __typename?: 'SubscriptionHistoryPage', _fulltext?: Array<string | null> | null } | { __typename?: 'TagPage', _fulltext?: Array<string | null> | null } | { __typename?: 'TeaserBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'TextBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'TextareaElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'TextboxElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'ThreeColumnLandingPage', _fulltext?: Array<string | null> | null } | { __typename?: 'TinyMceAdaptiveImage', _fulltext?: Array<string | null> | null } | { __typename?: 'TwitterBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'TwoColumnLandingPage', _fulltext?: Array<string | null> | null } | { __typename?: 'UrlElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'UsersPage', _fulltext?: Array<string | null> | null } | { __typename?: 'VariationContent', _fulltext?: Array<string | null> | null } | { __typename?: 'VectorImageMediaData', _fulltext?: Array<string | null> | null } | { __typename?: 'VideoBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'VideoFile', _fulltext?: Array<string | null> | null } | { __typename?: 'VimeoBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'VisitorDataHiddenElementBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'WebImageMediaData', _fulltext?: Array<string | null> | null } | { __typename?: 'WidgetBlock', _fulltext?: Array<string | null> | null } | { __typename?: 'WishListPage', _fulltext?: Array<string | null> | null } | { __typename?: 'YouTubeBlock', _fulltext?: Array<string | null> | null } | null> | null } | null };
 
 export type SearchBlogsQueryVariables = Exact<{
   locale?: InputMaybe<Array<InputMaybe<Locales>> | InputMaybe<Locales>>;
@@ -67945,7 +81838,7 @@ export type SearchBlogsQueryVariables = Exact<{
 export type SearchBlogsQuery = { __typename?: 'Query', LocationItemPage?: { __typename?: 'LocationItemPageOutput', items?: Array<{ __typename?: 'LocationItemPage', RelativePath?: string | null, Name?: string | null, MainIntro?: string | null, StartPublish?: any | null, Image?: { __typename?: 'ContentModelReference', Url?: string | null } | null, PageImage?: { __typename?: 'ContentModelReference', Url?: string | null } | null } | null> | null } | null };
 
 
-export const BlogListDocument = `
+export const BlogListDocument = gql`
     query BlogList($locale: [Locales] = en, $draft: Boolean = true) {
   LocationItemPage(
     locale: $locale
@@ -67977,19 +81870,36 @@ export const BlogListDocument = `
   }
 }
     `;
-export const useBlogListQuery = <
-      TData = BlogListQuery,
-      TError = unknown
-    >(
-      variables?: BlogListQueryVariables,
-      options?: UseQueryOptions<BlogListQuery, TError, TData>
-    ) =>
-    useQuery<BlogListQuery, TError, TData>(
-      variables === undefined ? ['BlogList'] : ['BlogList', variables],
-      fetchData<BlogListQuery, BlogListQueryVariables>(BlogListDocument, variables),
-      options
-    );
-export const BlogPostDocument = `
+
+/**
+ * __useBlogListQuery__
+ *
+ * To run a query within a React component, call `useBlogListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useBlogListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useBlogListQuery({
+ *   variables: {
+ *      locale: // value for 'locale'
+ *      draft: // value for 'draft'
+ *   },
+ * });
+ */
+export function useBlogListQuery(baseOptions?: Apollo.QueryHookOptions<BlogListQuery, BlogListQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<BlogListQuery, BlogListQueryVariables>(BlogListDocument, options);
+      }
+export function useBlogListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BlogListQuery, BlogListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<BlogListQuery, BlogListQueryVariables>(BlogListDocument, options);
+        }
+export type BlogListQueryHookResult = ReturnType<typeof useBlogListQuery>;
+export type BlogListLazyQueryHookResult = ReturnType<typeof useBlogListLazyQuery>;
+export type BlogListQueryResult = Apollo.QueryResult<BlogListQuery, BlogListQueryVariables>;
+export const BlogPostDocument = gql`
     query BlogPost($locale: [Locales] = en, $id: Int, $workId: Int) {
   LocationItemPage(
     locale: $locale
@@ -68018,19 +81928,37 @@ export const BlogPostDocument = `
   }
 }
     `;
-export const useBlogPostQuery = <
-      TData = BlogPostQuery,
-      TError = unknown
-    >(
-      variables?: BlogPostQueryVariables,
-      options?: UseQueryOptions<BlogPostQuery, TError, TData>
-    ) =>
-    useQuery<BlogPostQuery, TError, TData>(
-      variables === undefined ? ['BlogPost'] : ['BlogPost', variables],
-      fetchData<BlogPostQuery, BlogPostQueryVariables>(BlogPostDocument, variables),
-      options
-    );
-export const GetContentDocument = `
+
+/**
+ * __useBlogPostQuery__
+ *
+ * To run a query within a React component, call `useBlogPostQuery` and pass it any options that fit your needs.
+ * When your component renders, `useBlogPostQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useBlogPostQuery({
+ *   variables: {
+ *      locale: // value for 'locale'
+ *      id: // value for 'id'
+ *      workId: // value for 'workId'
+ *   },
+ * });
+ */
+export function useBlogPostQuery(baseOptions?: Apollo.QueryHookOptions<BlogPostQuery, BlogPostQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<BlogPostQuery, BlogPostQueryVariables>(BlogPostDocument, options);
+      }
+export function useBlogPostLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BlogPostQuery, BlogPostQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<BlogPostQuery, BlogPostQueryVariables>(BlogPostDocument, options);
+        }
+export type BlogPostQueryHookResult = ReturnType<typeof useBlogPostQuery>;
+export type BlogPostLazyQueryHookResult = ReturnType<typeof useBlogPostLazyQuery>;
+export type BlogPostQueryResult = Apollo.QueryResult<BlogPostQuery, BlogPostQueryVariables>;
+export const GetContentDocument = gql`
     query GetContent($url: String) {
   Content(locale: en, where: {RelativePath: {eq: $url}}) {
     items {
@@ -68039,19 +81967,35 @@ export const GetContentDocument = `
   }
 }
     `;
-export const useGetContentQuery = <
-      TData = GetContentQuery,
-      TError = unknown
-    >(
-      variables?: GetContentQueryVariables,
-      options?: UseQueryOptions<GetContentQuery, TError, TData>
-    ) =>
-    useQuery<GetContentQuery, TError, TData>(
-      variables === undefined ? ['GetContent'] : ['GetContent', variables],
-      fetchData<GetContentQuery, GetContentQueryVariables>(GetContentDocument, variables),
-      options
-    );
-export const SearchBlogsDocument = `
+
+/**
+ * __useGetContentQuery__
+ *
+ * To run a query within a React component, call `useGetContentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetContentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetContentQuery({
+ *   variables: {
+ *      url: // value for 'url'
+ *   },
+ * });
+ */
+export function useGetContentQuery(baseOptions?: Apollo.QueryHookOptions<GetContentQuery, GetContentQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetContentQuery, GetContentQueryVariables>(GetContentDocument, options);
+      }
+export function useGetContentLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetContentQuery, GetContentQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetContentQuery, GetContentQueryVariables>(GetContentDocument, options);
+        }
+export type GetContentQueryHookResult = ReturnType<typeof useGetContentQuery>;
+export type GetContentLazyQueryHookResult = ReturnType<typeof useGetContentLazyQuery>;
+export type GetContentQueryResult = Apollo.QueryResult<GetContentQuery, GetContentQueryVariables>;
+export const SearchBlogsDocument = gql`
     query SearchBlogs($locale: [Locales] = en, $query: String) {
   LocationItemPage(
     locale: $locale
@@ -68073,15 +82017,32 @@ export const SearchBlogsDocument = `
   }
 }
     `;
-export const useSearchBlogsQuery = <
-      TData = SearchBlogsQuery,
-      TError = unknown
-    >(
-      variables?: SearchBlogsQueryVariables,
-      options?: UseQueryOptions<SearchBlogsQuery, TError, TData>
-    ) =>
-    useQuery<SearchBlogsQuery, TError, TData>(
-      variables === undefined ? ['SearchBlogs'] : ['SearchBlogs', variables],
-      fetchData<SearchBlogsQuery, SearchBlogsQueryVariables>(SearchBlogsDocument, variables),
-      options
-    );
+
+/**
+ * __useSearchBlogsQuery__
+ *
+ * To run a query within a React component, call `useSearchBlogsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchBlogsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchBlogsQuery({
+ *   variables: {
+ *      locale: // value for 'locale'
+ *      query: // value for 'query'
+ *   },
+ * });
+ */
+export function useSearchBlogsQuery(baseOptions?: Apollo.QueryHookOptions<SearchBlogsQuery, SearchBlogsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchBlogsQuery, SearchBlogsQueryVariables>(SearchBlogsDocument, options);
+      }
+export function useSearchBlogsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchBlogsQuery, SearchBlogsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchBlogsQuery, SearchBlogsQueryVariables>(SearchBlogsDocument, options);
+        }
+export type SearchBlogsQueryHookResult = ReturnType<typeof useSearchBlogsQuery>;
+export type SearchBlogsLazyQueryHookResult = ReturnType<typeof useSearchBlogsLazyQuery>;
+export type SearchBlogsQueryResult = Apollo.QueryResult<SearchBlogsQuery, SearchBlogsQueryVariables>;

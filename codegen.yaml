@@ -5,8 +5,8 @@ generates:
     plugins:
       - typescript
       - typescript-operations
-      - typescript-react-query
+      - typescript-react-apollo
     config:
       withHooks: true
-      fetcher:
-        func: './previewFetcher#fetchData'
+      #fetcher:
+      #  func: './previewFetcher#fetchData'

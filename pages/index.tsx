@@ -7,7 +7,7 @@ import Head from "next/head";
 
 const inter = Inter({subsets: ["latin"]});
 export default function Home() {
-    const data = useBlogListQuery({draft: true}).data;
+    const data = useBlogListQuery({variables: {draft: true}}).data;
     const items = data?.LocationItemPage?.items;
     let filteredItems: LocationItemPage[] = [];
     if(items != null){
